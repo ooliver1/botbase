@@ -30,10 +30,13 @@ async def init(url: str):
         );
     """
     )
+    print("Done!")
+    exit(0)
 
 
 def main():
     if len(argv) == 1:
         print("Usage: botbase <url>")
+        exit(1)
 
     run(init(argv[1]))
