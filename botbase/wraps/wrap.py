@@ -4,8 +4,6 @@ from typing import TYPE_CHECKING
 
 from nextcord import Message, Embed
 
-from . import channel, user, member, thread
-
 if TYPE_CHECKING:
     from typing import Any
 
@@ -50,6 +48,10 @@ class Wrap:
         **kwargs,
     ) -> Message:
         from .context import MyContext
+        from .channel import WrappedChannel
+        from .thread import WrappedThread
+        from .member import WrappedMember
+        from .user import WrappedUser
 
         target = target or (
             self.message  # ctx, reply=True
@@ -66,12 +68,12 @@ class Wrap:
             embed.timestamp = self.message.created_at
 
         if include_command_invoker and not isinstance(
-            self, (channel.WrappedChannel, thread.WrappedThread)
+            self, (WrappedChannel, WrappedThread)
         ):
             if isinstance(self, (MyContext)):
                 text = self.author.display_name
                 icon_url = self.author.display_avatar.url
-            elif isinstance(self, (user.WrappedUser, member.WrappedMember)):
+            elif isinstance(self, (WrappedUser, WrappedMember)):
                 text = self.display_name
                 icon_url = self.display_avatar.url
             else:
@@ -86,10 +88,10 @@ class Wrap:
         elif isinstance(
             target,
             (
-                user.WrappedUser,
-                member.WrappedMember,
-                channel.WrappedChannel,
-                thread.WrappedThread,
+                WrappedUser,
+                WrappedMember,
+                WrappedChannel,
+                WrappedThread,
             ),
         ):
             return await target.send(embed=embed, **kwargs)
