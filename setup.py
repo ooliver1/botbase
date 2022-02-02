@@ -26,7 +26,7 @@ setup(
     version=version,
     author="ooliver",
     author_email="oliverwilkes2006@hotmail.com",
-    description="TODO:",
+    description="A personal nextcord bot base package for bots.",
     url="https://github.com/chit-chat-devs/botbase",
     packages=[
         "botbase",

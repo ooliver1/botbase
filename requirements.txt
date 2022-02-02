@@ -1,4 +1,4 @@
-"git+https://github.com/nextcord/nextcord">=2.0.0a6
+git+https://github.com/nextcord/nextcord
 asyncpg
 aiohttp[speed]
 jishaku
