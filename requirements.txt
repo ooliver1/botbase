@@ -1,0 +1,3 @@
+"git+https://github.com/nextcord/nextcord">=2.0.0a6
+asyncpg
+aiohttp[speed]
