@@ -59,6 +59,7 @@ class BotBase(Bot):
             "./logs/bot/io.log",
             maxBytes=1000000,
             backupCount=5,
+            encoding="utf-8",
         )
         h.setFormatter(
             Formatter(
