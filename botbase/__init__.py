@@ -5,10 +5,17 @@ from typing import NamedTuple, Literal
 from .botbase import BotBase
 from .emojis import Emojis
 from .exceptions import Blacklisted
-from wraps import MyContext, WrappedChannel, WrappedMember, WrappedUser, WrappedThread, Wrap
+from .wraps import (
+    MyContext,
+    WrappedChannel,
+    WrappedMember,
+    WrappedUser,
+    WrappedThread,
+    Wrap,
+)
 
 
-__version__ = "0.1.0a"
+__version__ = "0.1.1a"
 
 
 getLogger(__name__).addHandler(NullHandler())
