@@ -3,7 +3,7 @@ from __future__ import annotations
 from nextcord import Member
 from nextcord.ext.commands import MemberConverter
 
-from . import wrap.Wrap
+from . import wrap
 
 
 class WrappedMember(wrap.Wrap, Member):
