@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from nextcord.ext.commands import Context
 
-from . import wrap.Wrap
+from . import wrap
 
 if TYPE_CHECKING:
     from ..botbase import BotBase
