@@ -4,13 +4,13 @@ from typing import TYPE_CHECKING
 
 from nextcord.ext.commands import Context
 
-from .wrap import Wrap
+from . import wrap.Wrap
 
 if TYPE_CHECKING:
     from ..botbase import BotBase
 
 
-class MyContext(Context, Wrap):
+class MyContext(Context, wrap.Wrap):
     bot: BotBase
 
     def __init__(self, *args, **kwargs):

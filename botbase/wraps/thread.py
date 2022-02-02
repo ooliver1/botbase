@@ -3,10 +3,10 @@ from __future__ import annotations
 from nextcord import Thread
 from nextcord.ext.commands import ThreadConverter
 
-from .wrap import Wrap
+from . import wrap
 
 
-class WrappedThread(Wrap, Thread):
+class WrappedThread(wrap.Wrap, Thread):
     @classmethod
     async def convert(cls, ctx, argument: str) -> WrappedThread:
         _meta: Thread = await ThreadConverter().convert(ctx=ctx, argument=argument)

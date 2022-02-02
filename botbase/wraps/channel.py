@@ -5,13 +5,13 @@ from typing import TYPE_CHECKING
 from nextcord import abc
 from nextcord.ext.commands import TextChannelConverter
 
-from .wrap import Wrap
+from . import wrap
 
 if TYPE_CHECKING:
     from typing import Union
 
 
-class WrappedChannel(Wrap, abc.GuildChannel, abc.PrivateChannel):  # type: ignore
+class WrappedChannel(wrap.Wrap, abc.GuildChannel, abc.PrivateChannel):  # type: ignore
     @classmethod
     async def convert(cls, ctx, argument: str) -> WrappedChannel:
         channel: Union[

@@ -3,10 +3,10 @@ from __future__ import annotations
 from nextcord import Member
 from nextcord.ext.commands import MemberConverter
 
-from .wrap import Wrap
+from . import wrap.Wrap
 
 
-class WrappedMember(Wrap, Member):
+class WrappedMember(wrap.Wrap, Member):
     @classmethod
     async def convert(cls, ctx, argument: str) -> WrappedMember:
         member: Member = await MemberConverter().convert(ctx=ctx, argument=argument)
