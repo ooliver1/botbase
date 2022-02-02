@@ -33,7 +33,7 @@ async def init(url: str):
 
 
 def main():
-    if len(sys.argv) == 1:
+    if len(argv) == 1:
         print("Usage: botbase <url>")
 
-    run(init(sys.argv[1]))
+    run(init(argv[1]))
