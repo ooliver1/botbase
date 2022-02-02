@@ -25,6 +25,8 @@ prefix: str
 
 helpmsg: str default defaulthelpmsg
 
+helpindex: str default defaulthelpindex
+
 helptitle: str default "Help Me!"
 
 helpfields: dict[str, str] default {}

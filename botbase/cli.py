@@ -31,6 +31,7 @@ tables = table.split(";")
 
 async def init(url: str):
     pool = await create_pool(url)
+    assert pool is not None
 
     for table in tables:
         await pool.execute(table)

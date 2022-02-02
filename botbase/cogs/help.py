@@ -89,7 +89,7 @@ class FrontPageSource(PageSource):
         if self.index == 0:
             embed.add_field(
                 name="Who are you?",
-                value=menu.ctx.bot.helpmsg.format(created_at=created_at),
+                value=menu.ctx.bot.helpindex.format(created_at=created_at),
                 inline=False,
             )
         elif self.index == 1:

@@ -4,10 +4,11 @@ from importlib import import_module
 from logging import INFO, Formatter, getLogger
 from logging.handlers import RotatingFileHandler
 from typing import TYPE_CHECKING
+from textwrap import dedent
 
 from aiohttp import ClientSession
 from asyncpg import create_pool
-from nextcord import abc, Member, Thread, User
+from nextcord import abc, Member, Thread, User, Embed
 from nextcord.ext.commands import Bot, when_mentioned_or
 import jishaku
 
@@ -34,6 +35,9 @@ Use the dropdown below to select a category.
 
 Have fun!
 """
+defaulthelpindex = """
+I have been up since {created_at} and I serve for you!
+"""
 
 
 class BotBase(Bot):
@@ -44,7 +48,7 @@ class BotBase(Bot):
     def __init__(self, *args, config_module: str = "config", **kwargs) -> None:
         pre = kwargs.pop("command_prefix", self.get_pre)
 
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, command_prefix=pre, **kwargs)
 
         self.prefix: dict[int, list[str]] = {}
 
@@ -95,9 +99,10 @@ class BotBase(Bot):
         self.blacklist_enabled: bool = getattr(config, "blacklist_enabled", True)
         self.default_pre: list[str] = getattr(config, "prefix")
         self.helpmsg: str = getattr(config, "helpmsg", defaulthelpmsg)
+        self.helpindex: str = getattr(config, "helpindex", defaulthelpindex)
         self.helpfields: dict[str, str] = getattr(config, "helpfields", {})
         self.helptitle: str = getattr(config, "helptitle", "Help Me!")
-        self.emojiset: Emojis[str, str] = getattr(config, "emojiset", Emojis())
+        self.emojiset: Any = getattr(config, "emojiset", Emojis())
         self.logchannel: int = getattr(config, "logchannel", 921139782648725515)
 
         self._single_events: dict[str, Callable] = {
@@ -239,7 +244,7 @@ class BotBase(Bot):
         else:
             super().dispatch(event_name, *args, **kwargs)
 
-    async def on_command_completion(self, ctx: Context):
+    async def on_command_completion(self, ctx: MyContext):
         if ctx.guild is None:
             guild_id = None
             channel_id = None
