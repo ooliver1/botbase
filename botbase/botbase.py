@@ -16,7 +16,7 @@ from .blacklist import Blacklist
 from .emojis import Emojis
 from .exceptions import Blacklisted
 from .wraps import MyContext, WrappedChannel, WrappedMember, WrappedThread, WrappedUser
-import coggies
+from botbase import coggies
 
 if TYPE_CHECKING:
     from typing import Any, Callable, Union
