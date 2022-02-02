@@ -16,7 +16,6 @@ from .blacklist import Blacklist
 from .emojis import Emojis
 from .exceptions import Blacklisted
 from .wraps import MyContext, WrappedChannel, WrappedMember, WrappedThread, WrappedUser
-from botbase import coggies
 
 if TYPE_CHECKING:
     from typing import Any, Callable, Union
@@ -117,10 +116,10 @@ class BotBase(Bot):
         }
 
         self.load_extension("jishaku")
-        self.load_extension("coggies.help")
+        self.load_extension("botbase.coggies.help")
 
         if self.blacklist_enabled:
-            self.load_extension("coggies.blacklist")
+            self.load_extension("botbase.coggies.blacklist")
 
         self.loop.create_task(self.startup())
 
