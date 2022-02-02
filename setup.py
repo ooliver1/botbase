@@ -1,6 +1,6 @@
 import re
-from setuptools import setup
 
+from setuptools import setup
 
 _version_regex = (
     r"^__version__ = ('|\")((?:[0-9]+\.)*[0-9]+(?:\.?([a-z]+)(?:\.?[0-9])?)?)\1$"
@@ -24,7 +24,7 @@ setup(
     url="https://github.com/chit-chat-devs/botbase",
     packages=[
         "botbase",
-        "botbase.cogs",
+        "botbase.coggies",
         "botbase.wraps",
     ],
     install_requires=open("requirements.txt").read().splitlines(),
