@@ -2,7 +2,13 @@ from logging import NullHandler, getLogger
 from typing import NamedTuple, Literal
 
 
-__version__ = "0.0.0a"
+from .botbase import BotBase
+from .emojis import Emojis
+from .exceptions import Blacklisted
+from wraps import MyContext, WrappedChannel, WrappedMember, WrappedUser, WrappedThread, Wrap
+
+
+__version__ = "0.1.0a"
 
 
 getLogger(__name__).addHandler(NullHandler())
@@ -16,4 +22,4 @@ class VersionInfo(NamedTuple):
     serial: int
 
 
-version_info = VersionInfo(major=0, minor=0, micro=0, releaselevel="alpha", serial=0)
+version_info = VersionInfo(major=0, minor=1, micro=0, releaselevel="alpha", serial=0)

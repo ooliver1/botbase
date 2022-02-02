@@ -96,6 +96,7 @@ class BotBase(Bot):
         self.default_pre: list[str] = getattr(config, "prefix")
         self.helpmsg: str = getattr(config, "helpmsg", defaulthelpmsg)
         self.helpfields: dict[str, str] = getattr(config, "helpfields", {})
+        self.helptitle: str = getattr(config, "helptitle", "Help Me!")
         self.emojiset: Emojis[str, str] = getattr(config, "emojiset", Emojis())
         self.logchannel: int = getattr(config, "logchannel", 921139782648725515)
 
