@@ -73,3 +73,7 @@ class BlacklistCog(Cog):
     async def remove_guild(self, ctx: MyContext, guild: Object) -> None:
         await self.bot.blacklist.remove(guild.id, guild=True)
         await ctx.send_embed("I have completed that action for you.")
+
+
+def setup(bot: BotBase):
+    bot.add_cog(BlacklistCog(bot))
