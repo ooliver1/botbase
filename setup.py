@@ -15,12 +15,6 @@ except FileNotFoundError:
     version = "0.0.0"
 
 
-def parse_requirements_file(path):
-    with open(path) as fp:
-        dependencies = (d.strip() for d in fp.read().split("\n") if d.strip())
-        return [d for d in dependencies if not d.startswith("#")]
-
-
 setup(
     name="botbase",
     version=version,
@@ -31,7 +25,7 @@ setup(
     packages=[
         "botbase",
     ],
-    install_requires=parse_requirements_file("requirements.txt"),
+    install_requires=open("requirements.txt").read().splitlines(),
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
