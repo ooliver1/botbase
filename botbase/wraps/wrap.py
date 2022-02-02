@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from nextcord import Message, Embed
 
-from . import WrappedChannel, WrappedUser, WrappedMember, WrappedThread
+from . import channel, user, member, thread
 
 if TYPE_CHECKING:
     from typing import Any
@@ -65,11 +65,13 @@ class Wrap:
             # Doesnt work on Channels, Users, Members
             embed.timestamp = self.message.created_at
 
-        if include_command_invoker and not isinstance(self, (WrappedChannel, WrappedThread)):
+        if include_command_invoker and not isinstance(
+            self, (channel.WrappedChannel, thread.WrappedThread)
+        ):
             if isinstance(self, (MyContext)):
                 text = self.author.display_name
                 icon_url = self.author.display_avatar.url
-            elif isinstance(self, (WrappedUser, WrappedMember)):
+            elif isinstance(self, (user.WrappedUser, member.WrappedMember)):
                 text = self.display_name
                 icon_url = self.display_avatar.url
             else:
@@ -81,7 +83,15 @@ class Wrap:
             return await target.reply(embed=embed, **kwargs)
         elif isinstance(target, Message):
             return await target.channel.send(embed=embed, **kwargs)
-        elif isinstance(target, (WrappedUser, WrappedMember, WrappedChannel, WrappedThread)):
+        elif isinstance(
+            target,
+            (
+                user.WrappedUser,
+                member.WrappedMember,
+                channel.WrappedChannel,
+                thread.WrappedThread,
+            ),
+        ):
             return await target.send(embed=embed, **kwargs)
         else:
             raise TypeError(f"{type(self).__name__} cannot send embeds")
