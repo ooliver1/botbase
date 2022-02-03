@@ -22,11 +22,11 @@ CREATE TABLE IF NOT EXISTS commands (
     guild BIGINT,
     channel BIGINT,
     member BIGINT NOT NULL,
-    amount INT NOT NULL
+    amount INT NOT NULL,
+    UNIQUE(command, guild, channel, member)
 );
 """
 tables = table.split(";")
-
 
 
 async def init(url: str):
