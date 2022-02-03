@@ -8,10 +8,11 @@ from traceback import print_exception
 from typing import TYPE_CHECKING
 
 from nextcord import ButtonStyle, Embed
-from nextcord.ext.commands import Cog, Context, HelpCommand, command
+from nextcord.ext.commands import Cog, HelpCommand, command
 from nextcord.ext.menus import ButtonMenuPages, ListPageSource, PageSource
 from nextcord.ui import Select, Button
 from nextcord.utils import format_dt
+from botbase import MyContext
 
 if TYPE_CHECKING:
     from nextcord import Interaction, Message
@@ -19,6 +20,10 @@ if TYPE_CHECKING:
     from nextcord.ui import Item
 
     from ..botbase import BotBase
+
+
+class MyMenu(ButtonMenuPages):
+    ctx: MyContext
 
 
 class MultiSource(ListPageSource):
@@ -35,7 +40,7 @@ class MultiSource(ListPageSource):
         embed = Embed(
             title=self.title,
             description=self.description,
-            color=0x9966CC,
+            color=menu.ctx.bot.color,
         )
         for command in commands:
             name = command.qualified_name
@@ -74,7 +79,9 @@ class FrontPageSource(PageSource):
     def format_page(self, menu, _) -> Embed:
         embed = Embed(
             title=menu.ctx.bot.helptitle,
-            description=menu.ctx.bot.helpmsg.format(prefix=menu.ctx.clean_prefix, name=menu.ctx.bot.user.name),
+            description=menu.ctx.bot.helpmsg.format(
+                prefix=menu.ctx.clean_prefix, name=menu.ctx.bot.user.name
+            ),
             color=menu.ctx.bot.color,
         )
 
@@ -172,7 +179,7 @@ class HelpSelect(Select):
 
 class HelpView(ButtonMenuPages):
     def __init__(
-        self, source: PageSource, ctx: Context, cmds: dict[Cog | Group, list[Command]]
+        self, source: PageSource, ctx: MyContext, cmds: dict[Cog | Group, list[Command]]
     ) -> None:
         super().__init__(source=source, style=ButtonStyle.blurple)
         if len(cmds) != 1:
@@ -233,6 +240,8 @@ class HelpView(ButtonMenuPages):
 
 
 class MyHelp(HelpCommand):
+    context: MyContext
+
     def get_command_signature(self, command: Command | Group) -> str:
         name = command.qualified_name
         if command.aliases:
@@ -242,7 +251,8 @@ class MyHelp(HelpCommand):
     async def send_bot_help(self, mapping: dict[Cog, Command]) -> None:
         bot = self.context.bot
 
-        mapping.pop(bot.get_cog("Help"))
+        if coggie := bot.get_cog("Help"):
+            mapping.pop(coggie)
 
         def key(command) -> str:
             cog = command.cog
@@ -258,7 +268,8 @@ class MyHelp(HelpCommand):
                 continue
 
             cog = bot.get_cog(name)
-            all_commands[cog] = sorted(children, key=lambda c: c.qualified_name)
+            if cog is not None:
+                all_commands[cog] = sorted(children, key=lambda c: c.qualified_name)
 
         menu = HelpView(FrontPageSource(), ctx=self.context, cmds=all_commands)  # type: ignore
         await menu.start(self.context)
@@ -277,7 +288,7 @@ class MyHelp(HelpCommand):
         await menu.start(self.context)
 
     async def send_command_help(self, command):
-        embed = Embed(colour=self.context.bot.pastelpurp)
+        embed = Embed(colour=self.context.bot.color)
         self.common_command_formatting(embed, command)
         await self.context.send(embed=embed)
 
@@ -306,10 +317,8 @@ class MyHelp(HelpCommand):
                 msg = f'Command "`{cmd}`" not found, try {self.context.clean_prefix}help to see available commands.'
         else:
             msg = str(error)
-        embed = Embed(title="Error", description=msg, color=self.context.bot.pastelpurp)
-        self.context.bot.embed_modify(embed, self.context)
-        channel = self.get_destination()
-        await channel.send(embed=embed)
+        embed = Embed(title="Error", description=msg, color=self.context.bot.color)
+        await self.context.send_embed("Error", msg)
 
     def common_command_formatting(
         self, embed: Embed | MultiSource, command: Command
@@ -327,9 +336,9 @@ class Help(Cog, name="help", description="Get some help!"):
         bot.help_command = MyHelp()
         bot.help_command.cog = self
 
-    @property
-    def emoji(self) -> str:
-        return self.bot.emojiset.help
+    # @property
+    # def emoji(self) -> str:
+    #     return self.bot.emojiset.help
 
 
 def setup(bot: BotBase):

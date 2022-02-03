@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from nextcord import Message, Embed
+from nextcord.embeds import _EmptyEmbed
 
 if TYPE_CHECKING:
     from typing import Any
@@ -38,7 +39,8 @@ class Wrap:
 
     async def send_embed(
         self,
-        desc: str,
+        title: str | _EmptyEmbed = Embed.Empty,
+        desc: str | _EmptyEmbed = Embed.Empty,
         *,
         color=None,
         target=None,
@@ -61,7 +63,7 @@ class Wrap:
             else self  # Anything else (member.send)
         )
 
-        embed = Embed(description=desc, color=color or self._bot.color)
+        embed = Embed(title=title, description=desc, color=color or self._bot.color)
 
         if contain_timestamp and isinstance(self, MyContext):
             # Doesnt work on Channels, Users, Members
