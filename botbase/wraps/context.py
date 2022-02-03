@@ -16,6 +16,6 @@ class MyContext(Context, wrap.Wrap):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self._bot = self.bot
+
         self.message = self.bot.get_wrapped_message(self.message)
-        self.author = self.bot.get_wrapped_person(self.author)
-        self.channel = self.bot.get_wrapped_channel(self.channel)
