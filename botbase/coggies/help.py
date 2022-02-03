@@ -293,7 +293,7 @@ class MyHelp(HelpCommand):
         try:
             await menu.start(self.context)
         except Exception as e:
-            log.info(e)
+            log.error(e, exc_info=True)
 
     async def send_cog_help(self, cog: Cog):
         entries: list[Command] = [
