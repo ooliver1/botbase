@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from importlib import import_module
-from logging import INFO, Formatter, getLogger
+from logging import INFO, Formatter, getLogger, CRITICAL
 from logging.handlers import RotatingFileHandler
 from typing import TYPE_CHECKING
 from textwrap import dedent
@@ -69,6 +69,7 @@ class BotBase(Bot):
         )
         h.namer = lambda name: name.replace(".log", "") + ".log"
         log.addHandler(h)
+        getLogger("base_events").setLevel(CRITICAL)
 
         config = import_module(config_module.rstrip(".py"))
 
