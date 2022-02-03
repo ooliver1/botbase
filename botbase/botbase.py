@@ -63,7 +63,7 @@ class BotBase(Bot):
         )
         h.setFormatter(
             Formatter(
-                "%(levelname)-7s %(asctime)s %(filename)12s:%(funcName)-13s: %(message)s",
+                "%(levelname)-7s %(asctime)s %(filename)14s:%(funcName)-25s: %(message)s",
                 datefmt="%H:%M:%S %d/%m/%Y",
             )
         )
