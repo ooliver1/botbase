@@ -76,7 +76,8 @@ class FrontPageSource(PageSource):
         self.index = num
         return self
 
-    def format_page(self, menu, _) -> Embed:
+    def format_page(self, menu: MyMenu, _) -> Embed:
+        assert menu.ctx.bot.user is not None
         embed = Embed(
             title=menu.ctx.bot.helptitle,
             description=menu.ctx.bot.helpmsg.format(
@@ -249,6 +250,7 @@ class MyHelp(HelpCommand):
         return f"{self.context.clean_prefix}{name} {command.signature}"
 
     async def send_bot_help(self, mapping: dict[Cog, Command]) -> None:
+        print("a")
         bot = self.context.bot
 
         if coggie := bot.get_cog("Help"):
@@ -262,6 +264,8 @@ class MyHelp(HelpCommand):
             c for c in sorted(bot.commands, key=key) if not c.hidden
         ]
 
+        print("b")
+
         all_commands: dict[Cog, list[Command]] = {}
         for name, children in groupby(entries, key=key):
             if name == "U0010ffff":
@@ -271,7 +275,10 @@ class MyHelp(HelpCommand):
             if cog is not None:
                 all_commands[cog] = sorted(children, key=lambda c: c.qualified_name)
 
-        menu = HelpView(FrontPageSource(), ctx=self.context, cmds=all_commands)  # type: ignore
+        print("c")
+
+        menu = HelpView(FrontPageSource(), ctx=self.context, cmds=all_commands)
+        print("d")
         await menu.start(self.context)
 
     async def send_cog_help(self, cog: Cog):
