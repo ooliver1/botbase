@@ -4,7 +4,7 @@ from difflib import get_close_matches
 from inspect import cleandoc
 from itertools import groupby
 from sys import stderr
-from traceback import log.info_exception
+from traceback import print_exception
 from typing import TYPE_CHECKING
 from logging import getLogger
 
@@ -216,7 +216,7 @@ class HelpView(ButtonMenuPages):
             await interaction.response.send_message(
                 "An unknown error occurred, sorry", ephemeral=True
             )
-        log.info_exception(type(error), error, error.__traceback__, file=stderr)
+        print_exception(type(error), error, error.__traceback__, file=stderr)
 
     async def interaction_check(self, interaction: Interaction) -> bool:
         if interaction.user and interaction.user.id in (
