@@ -69,7 +69,7 @@ class BotBase(Bot):
         )
         h.namer = lambda name: name.replace(".log", "") + ".log"
         log.addHandler(h)
-        getLogger("base_events").setLevel(CRITICAL)
+        getLogger("asyncio").setLevel(CRITICAL)
 
         config = import_module(config_module.rstrip(".py"))
 
