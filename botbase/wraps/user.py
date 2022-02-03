@@ -15,4 +15,4 @@ class WrappedUser(wrap.Wrap, User):
         return cls(user, ctx.bot)
 
     def __getattr__(self, item):
-        return getattr(self._wrapped_item, item)
+        return getattr(self._wrapped, item)
