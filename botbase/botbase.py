@@ -172,8 +172,8 @@ class BotBase(Bot):
 
         await self.invoke(ctx)
 
-    async def get_or_fetch_member(self, guild_id: int, member_id: int) -> WrappedMember:
-        guild = await self.get_or_fetch_guild(guild_id)
+    async def getch_member(self, guild_id: int, member_id: int) -> WrappedMember:
+        guild = await self.getch_guild(guild_id)
         member = guild.get_member(member_id)
         if member is not None:
             return WrappedMember(member, bot=self)
@@ -181,9 +181,7 @@ class BotBase(Bot):
         member = await guild.fetch_member(member_id)
         return WrappedMember(member, bot=self)
 
-    async def get_or_fetch_channel(
-        self, channel_id: int
-    ) -> WrappedChannel | WrappedThread:
+    async def getch_channel(self, channel_id: int) -> WrappedChannel | WrappedThread:
         channel = self.get_channel(channel_id)
         if channel:
             return self.get_wrapped_channel(channel)
@@ -191,7 +189,7 @@ class BotBase(Bot):
         channel = await self.fetch_channel(channel_id)
         return self.get_wrapped_channel(channel)
 
-    async def get_or_fetch_guild(self, guild_id: int) -> Guild:
+    async def getch_guild(self, guild_id: int) -> Guild:
         guild = self.get_guild(guild_id)
         if guild:
             return guild
@@ -199,7 +197,7 @@ class BotBase(Bot):
         guild = await self.fetch_guild(guild_id)
         return guild
 
-    async def get_or_fetch_user(self, user_id: int) -> WrappedUser:
+    async def getch_user(self, user_id: int) -> WrappedUser:
         user = self.get_user(user_id)
         if user:
             return WrappedUser(user, bot=self)
@@ -240,7 +238,7 @@ class BotBase(Bot):
             wrapped_first_arg, wrapped_second_arg = self._double_events[_name](
                 args[0], args[1]
             )
-            super().dispatch(event_name, wrapped_first_arg, wrapped_second_arg, self)
+            super().dispatch(event_name, wrapped_first_arg, wrapped_second_arg)
 
         else:
             super().dispatch(event_name, *args, **kwargs)
