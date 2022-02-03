@@ -36,7 +36,7 @@ class MultiSource(ListPageSource):
         self.title = f"{self.multi.qualified_name.capitalize()} Commands"
         self.description = self.multi.description
 
-    def format_page(self, menu, commands: list[Command]) -> Embed:
+    def format_page(self, menu: MyMenu, commands: list[Command]) -> Embed:
         embed = Embed(
             title=self.title,
             description=self.description,
@@ -250,7 +250,6 @@ class MyHelp(HelpCommand):
         return f"{self.context.clean_prefix}{name} {command.signature}"
 
     async def send_bot_help(self, mapping: dict[Cog, Command]) -> None:
-        print("a")
         bot = self.context.bot
 
         if coggie := bot.get_cog("Help"):
@@ -264,8 +263,6 @@ class MyHelp(HelpCommand):
             c for c in sorted(bot.commands, key=key) if not c.hidden
         ]
 
-        print("b")
-
         all_commands: dict[Cog, list[Command]] = {}
         for name, children in groupby(entries, key=key):
             if name == "U0010ffff":
@@ -275,10 +272,7 @@ class MyHelp(HelpCommand):
             if cog is not None:
                 all_commands[cog] = sorted(children, key=lambda c: c.qualified_name)
 
-        print("c")
-
-        menu = HelpView(FrontPageSource(), ctx=self.context, cmds=all_commands)
-        print("d")
+        menu = HelpView(FrontPageSource(), ctx=self.context, cmds=all_commands)  # type: ignore
         await menu.start(self.context)
 
     async def send_cog_help(self, cog: Cog):
