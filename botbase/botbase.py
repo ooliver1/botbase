@@ -306,6 +306,9 @@ class BotBase(Bot):
         await self.get_channel(self.logchannel).send(embed=embed)  # type: ignore
 
     async def on_guild_remove(self, guild: Guild):
+        if guild.unavailable:
+            return
+
         embed = Embed(
             title="Removed Guild :(",
             description=dedent(
