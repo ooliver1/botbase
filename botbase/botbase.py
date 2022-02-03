@@ -63,7 +63,7 @@ class BotBase(Bot):
         )
         h.setFormatter(
             Formatter(
-                "%(levelname)-7s %(asctime)s %(filename)14s:%(funcName)-25s: %(message)s",
+                "%(levelname)-7s %(asctime)s %(filename)12s:%(funcName)-16s: %(message)s",
                 datefmt="%H:%M:%S %d/%m/%Y",
             )
         )
@@ -140,6 +140,12 @@ class BotBase(Bot):
         self.loop.create_task(self.startup())
 
         super().run(*args, **kwargs)
+
+    async def close(self, *args, **kwargs) -> None:
+        if self.aiohttp_enabled:
+            await self.session.close()
+
+        await super().close(*args, **kwargs)
 
     @staticmethod
     async def get_pre(bot: BotBase, message: Message) -> list[str]:
