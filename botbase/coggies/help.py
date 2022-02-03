@@ -94,6 +94,7 @@ class FrontPageSource(PageSource):
         log.info("2")
 
         for name, value in menu.ctx.bot.helpfields.items():
+            log.info("%s:%s", name, value)
             embed.add_field(
                 name=name,
                 value=value,
@@ -125,6 +126,8 @@ class FrontPageSource(PageSource):
 
             for name, value in entries:
                 embed.add_field(name=name, value=value, inline=False)
+
+            log.info(embed.fields)
 
         log.info("3")
 
