@@ -242,6 +242,8 @@ class MyHelp(HelpCommand):
     async def send_bot_help(self, mapping: dict[Cog, Command]) -> None:
         bot = self.context.bot
 
+        mapping.pop(bot.get_cog("Help"))
+
         def key(command) -> str:
             cog = command.cog
             return cog.qualified_name if cog else "\U0010ffff"
@@ -319,7 +321,7 @@ class MyHelp(HelpCommand):
             embed.description = command.help or "No help found..."
 
 
-class Help(Cog, name="Help", description="Get some help!"):
+class Help(Cog, name="help", description="Get some help!"):
     def __init__(self, bot: BotBase):
         self.bot = bot
         bot.help_command = MyHelp()
