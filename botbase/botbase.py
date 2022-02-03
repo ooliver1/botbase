@@ -321,4 +321,7 @@ class BotBase(Bot):
             ),
             color=self.color,
         )
-        await self.get_channel(self.logchannel).send(embed=embed)  # type: ignore
+        try:
+            await self.get_channel(self.logchannel).send(embed=embed)  # type: ignore
+        except AttributeError:
+            pass
