@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from importlib import import_module
-from logging import INFO, Formatter, getLogger, FileHandler
+from logging import INFO, Formatter, getLogger, CRITICAL
 from logging.handlers import RotatingFileHandler
 from typing import TYPE_CHECKING
 from textwrap import dedent
@@ -69,9 +69,9 @@ class BotBase(Bot):
         )
         h.namer = lambda name: name.replace(".log", "") + ".log"
         log.addHandler(h)
-        loggie = getLogger("asyncio")
-        loggie.handlers = []
-        loggie.addHandler(FileHandler("./logs/bot/asyncio.log"))
+        getLogger("asyncio").setLevel(CRITICAL)
+
+        self.loop.set_exception_handler(self.asyncio_handler)
 
         config = import_module(config_module.rstrip(".py"))
 
@@ -126,6 +126,11 @@ class BotBase(Bot):
             self.load_extension("botbase.coggies.blacklist")
 
         self.loop.create_task(self.startup())
+
+    def asyncio_handler(self, loop, context):
+        log = getLogger("asyncio2")
+        log.info(context)
+        log.error(context, exc_info=True)
 
     async def startup(self) -> None:
         if self.db_enabled:
