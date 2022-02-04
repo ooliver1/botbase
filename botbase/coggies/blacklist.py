@@ -15,7 +15,7 @@ class BlacklistCog(Cog):
     def __init__(self, bot: BotBase) -> None:
         self.bot = bot
 
-    @group(invoke_without_command=True)
+    @group(invoke_without_command=True, hidden=True)
     @is_owner()
     async def blacklist(self, ctx: MyContext) -> None:
         await ctx.send_help(ctx.command)
