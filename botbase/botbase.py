@@ -89,7 +89,7 @@ class BotBase(Bot):
             self.db_enabled = True
             self.db_args = ()
             self.db_kwargs = {
-                "database_name": db_name,
+                "database": db_name,
                 "user": db_user,
             }
         else:
@@ -173,17 +173,13 @@ class BotBase(Bot):
             try:
                 prefix = bot.prefix[message.guild.id]
             except KeyError:
-                try:
-                    prefix = [
-                        await bot.db.fetchval(
-                            "SELECT prefix FROM guilds WHERE id=$1", message.guild.id
-                        )
-                    ]
-                except AttributeError:
+                prefix = [
+                    await bot.db.fetchval(
+                        "SELECT prefix FROM guilds WHERE id=$1", message.guild.id
+                    )
+                ]
+                if prefix[0] is None:
                     prefix = bot.default_pre
-                else:
-                    if prefix[0] is None:
-                        prefix = bot.default_pre
                     bot.prefix[message.guild.id] = prefix
         else:
             prefix = bot.default_pre
