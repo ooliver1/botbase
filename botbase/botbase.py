@@ -190,9 +190,9 @@ class BotBase(Bot):
             return
 
         if self.blacklist and message.author.id in self.blacklist:
-            return log.info("Ignoring blacklisted user %s", message.author.id)
+            return log.debug("Ignoring blacklisted user %s", message.author.id)
         elif self.blacklist and message.guild and message.guild.id in self.blacklist:
-            return log.info("Ignoring blacklisted guild %s", message.guild.id)
+            return log.debug("Ignoring blacklisted guild %s", message.guild.id)
 
         ctx = await self.get_context(message, cls=MyContext)
 
