@@ -1,16 +1,16 @@
 from __future__ import annotations
 
 from importlib import import_module
-from logging import INFO, Formatter, getLogger, CRITICAL
+from logging import CRITICAL, INFO, Formatter, getLogger
 from logging.handlers import RotatingFileHandler
-from typing import TYPE_CHECKING
 from textwrap import dedent
+from typing import TYPE_CHECKING
 
+import jishaku
 from aiohttp import ClientSession
 from asyncpg import create_pool
-from nextcord import abc, Member, Thread, User, Embed
+from nextcord import Embed, Member, Thread, User, abc
 from nextcord.ext.commands import Bot, when_mentioned_or
-import jishaku
 
 from .blacklist import Blacklist
 from .emojis import Emojis
@@ -21,7 +21,7 @@ if TYPE_CHECKING:
     from typing import Any, Callable, Union
 
     from asyncpg import Pool
-    from nextcord import Message, Guild
+    from nextcord import Guild, Message
 
 
 log = getLogger(__name__)
@@ -69,7 +69,7 @@ class BotBase(Bot):
         )
         h.namer = lambda name: name.replace(".log", "") + ".log"
         log.addHandler(h)
-        # getLogger("asyncio").setLevel(CRITICAL)
+        getLogger("asyncio").setLevel(CRITICAL)
 
         self.loop.set_exception_handler(self.asyncio_handler)
 
@@ -129,8 +129,10 @@ class BotBase(Bot):
 
     def asyncio_handler(self, loop, context):
         log = getLogger("asyncio2")
-        log.info(context)
-        log.error(context, exc_info=True)
+        if context["message"] == "Unclosed client session":
+            return
+
+        log.error(context["message"] + "\n" + "\n".join(f"{k}: {v}" for k, v in context.items() if k != "message"))
 
     async def startup(self) -> None:
         if self.db_enabled:
