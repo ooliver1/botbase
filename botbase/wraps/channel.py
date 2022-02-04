@@ -23,7 +23,7 @@ class WrappedChannel(wrap.Wrap, abc.GuildChannel, abc.PrivateChannel):  # type: 
         return getattr(self._wrapped, item)
 
     def permissions_for(self, *args, **kwargs):
-        if isinstance(self, DMChannel):
+        if not hasattr(self, "guild"):
             return Permissions.all()
 
         return super().permissions_for(*args, **kwargs)
