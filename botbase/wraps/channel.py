@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from nextcord import abc
+from nextcord import abc, Permissions, DMChannel
 from nextcord.ext.commands import TextChannelConverter
 
 from . import wrap
@@ -21,3 +21,9 @@ class WrappedChannel(wrap.Wrap, abc.GuildChannel, abc.PrivateChannel):  # type: 
 
     def __getattr__(self, item):
         return getattr(self._wrapped, item)
+
+    def permissions_for(self, *args, **kwargs):
+        if isinstance(self, DMChannel):
+            return Permissions.all()
+
+        return super().permissions_for(*args, **kwargs)

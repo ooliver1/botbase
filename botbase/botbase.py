@@ -128,7 +128,7 @@ class BotBase(Bot):
         self.loop.create_task(self.startup())
 
     def asyncio_handler(self, loop, context):
-        log = getLogger("asyncio2")
+        log = getLogger("notasyncio")
         if context["message"] == "Unclosed client session":
             return
 
