@@ -18,7 +18,7 @@ from .exceptions import Blacklisted
 from .wraps import MyContext, WrappedChannel, WrappedMember, WrappedThread, WrappedUser
 
 if TYPE_CHECKING:
-    from typing import Any, Callable, Union
+    from typing import Any, Callable, Optional, Union
 
     from asyncpg import Pool
     from nextcord import Guild, Message
@@ -43,7 +43,7 @@ I have been up since {created_at} and I serve for you!
 class BotBase(Bot):
     db: Pool
     session: ClientSession
-    blacklist: Blacklist
+    blacklist: Optional[Blacklist]
 
     def __init__(self, *args, config_module: str = "config", **kwargs) -> None:
         pre = kwargs.pop("command_prefix", self.get_pre)
@@ -125,6 +125,7 @@ class BotBase(Bot):
 
         if self.blacklist_enabled:
             self.load_extension("botbase.coggies.blacklist")
+            self.blacklist = None
 
         self.loop.create_task(self.startup())
 
@@ -188,9 +189,9 @@ class BotBase(Bot):
         if message.author.bot:
             return
 
-        if message.author.id in self.blacklist:
+        if self.blacklist and message.author.id in self.blacklist:
             raise Blacklisted("Ignoring blacklisted user")
-        elif message.guild and message.guild.id in self.blacklist:
+        elif self.blacklist and message.guild and message.guild.id in self.blacklist:
             raise Blacklisted("Ignoring blacklisted guild")
 
         ctx = await self.get_context(message, cls=MyContext)
@@ -310,7 +311,7 @@ class BotBase(Bot):
                 )
 
     async def on_guild_join(self, guild: Guild):
-        if guild.id in self.blacklist.guilds:
+        if self.blacklist and guild.id in self.blacklist.guilds:
             log.info("Leaving blacklisted Guild(id=%s)", guild.id)
             await guild.leave()
             return
