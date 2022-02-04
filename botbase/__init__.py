@@ -15,7 +15,7 @@ from .wraps import (
 )
 
 
-__version__ = "0.3.8b"
+__version__ = "0.3.9b"
 
 
 getLogger(__name__).addHandler(NullHandler())

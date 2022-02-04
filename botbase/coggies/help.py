@@ -81,7 +81,6 @@ class FrontPageSource(PageSource):
         return self
 
     def format_page(self, menu: MyMenu, _) -> Embed:
-        log.info("1")
         assert menu.ctx.bot.user is not None
         embed = Embed(
             title=menu.ctx.bot.helptitle,
@@ -91,10 +90,7 @@ class FrontPageSource(PageSource):
             color=menu.ctx.bot.color,
         )
 
-        log.info("2")
-
         for name, value in menu.ctx.bot.helpfields.items():
-            log.info("%s:%s", name, value)
             embed.add_field(
                 name=name,
                 value=value,
@@ -127,10 +123,6 @@ class FrontPageSource(PageSource):
             for name, value in entries:
                 embed.add_field(name=name, value=value, inline=False)
 
-            log.info(embed.fields)
-
-        log.info("3")
-
         return embed
 
 
@@ -144,7 +136,6 @@ class HelpSelect(Select):
         self.commands = commands
         self.bot = bot
         self.fill()
-        log.info("z")
 
     def fill(self) -> None:
         self.add_option(
@@ -164,7 +155,6 @@ class HelpSelect(Select):
                 value=cog.qualified_name,
                 description=description,
             )
-        log.info("y")
 
     async def callback(self, interaction: Interaction):
         assert self.view is not None
@@ -264,7 +254,6 @@ class MyHelp(HelpCommand):
         return f"{self.context.clean_prefix}{name} {command.signature}"
 
     async def send_bot_help(self, mapping: dict[Cog, Command]) -> None:
-        log.info("a")
         bot = self.context.bot
 
         if coggie := bot.get_cog("Help"):
@@ -273,8 +262,6 @@ class MyHelp(HelpCommand):
         def key(command) -> str:
             cog = command.cog
             return cog.qualified_name if cog else "\U0010ffff"
-
-        log.info("b")
 
         entries: list[Command] = [
             c for c in sorted(bot.commands, key=key) if not c.hidden
@@ -289,14 +276,9 @@ class MyHelp(HelpCommand):
             if cog is not None:
                 all_commands[cog] = sorted(children, key=lambda c: c.qualified_name)
 
-        log.info("c")
 
         menu = HelpView(FrontPageSource(), ctx=self.context, cmds=all_commands)  # type: ignore
-        log.info("d")
-        try:
-            await menu.start(self.context)
-        except Exception as e:
-            log.error(e, exc_info=True)
+        await menu.start(self.context)
 
     async def send_cog_help(self, cog: Cog):
         entries: list[Command] = [
