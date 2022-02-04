@@ -123,9 +123,6 @@ class FrontPageSource(PageSource):
             for name, value in entries:
                 embed.add_field(name=name, value=value, inline=False)
 
-        log.info(embed.fields)
-        log.info(embed.to_dict())
-
         return embed
 
 
