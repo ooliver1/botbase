@@ -69,7 +69,7 @@ class BotBase(Bot):
         )
         h.namer = lambda name: name.replace(".log", "") + ".log"
         log.addHandler(h)
-        getLogger("asyncio").setLevel(CRITICAL)
+        # getLogger("asyncio").setLevel(CRITICAL)
 
         self.loop.set_exception_handler(self.asyncio_handler)
 
