@@ -145,7 +145,7 @@ class HelpSelect(Select):
             description="The main page on how to use the bot!",
         )
         for cog, commands in self.commands.items():
-            if not commands or cog.qualified_name == "Jishaku":
+            if not commands or cog.qualified_name in ("Jishaku", "help"):
                 continue
             description = cog.description or None
             emoji = getattr(cog, "emoji", None)

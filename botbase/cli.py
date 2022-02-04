@@ -7,11 +7,11 @@ from asyncpg import create_pool
 table = """
 CREATE TABLE IF NOT EXISTS blacklist_users (
     id BIGINT PRIMARY KEY,
-    reason VARCHAR NOT NULL
+    reason VARCHAR
 );
 CREATE TABLE IF NOT EXISTS blacklist_guilds (
     id BIGINT PRIMARY KEY,
-    reason VARCHAR NOT NULL
+    reason VARCHAR
 );
 CREATE TABLE IF NOT EXISTS guilds (
     id BIGINT PRIMARY KEY,
