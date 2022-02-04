@@ -173,14 +173,18 @@ class BotBase(Bot):
             try:
                 prefix = bot.prefix[message.guild.id]
             except KeyError:
-                prefix = [
-                    await bot.db.fetchval(
-                        "SELECT prefix FROM guilds WHERE id=$1", message.guild.id
-                    )
-                ]
-                if prefix[0] is None:
+                try:
+                    prefix = [
+                        await bot.db.fetchval(
+                            "SELECT prefix FROM guilds WHERE id=$1", message.guild.id
+                        )
+                    ]
+                except AttributeError:
                     prefix = bot.default_pre
-                bot.prefix[message.guild.id] = prefix
+                else:
+                    if prefix[0] is None:
+                        prefix = bot.default_pre
+                    bot.prefix[message.guild.id] = prefix
         else:
             prefix = bot.default_pre
         return when_mentioned_or(*prefix)(bot, message)
