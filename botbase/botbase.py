@@ -133,9 +133,13 @@ class BotBase(Bot):
             return
 
         log.error(
-            context["message"] + "\n" + "\n".join(f"{k}: {v}"
-            for k, v in context.items()
-            if k != "message" and k is not None and k != type(None))
+            context["message"]
+            + "\n"
+            + "\n".join(
+                f"{k}: {v}"
+                for k, v in context.items()
+                if k != "message" and k is not None and v is not None
+            )
         )
 
     async def startup(self) -> None:
