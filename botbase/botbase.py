@@ -132,7 +132,7 @@ class BotBase(Bot):
         if context["message"] == "Unclosed client session":
             return
 
-        log.error(context["message"] + "\n" + "\n".join(f"{k}: {v}" for k, v in context.items() if k != "message"))
+        log.error(context["message"] + "\n" + "\n".join(f"{k}: {v}" for k, v in context.items() if k != "message" and k is not None and k != type(None)))
 
     async def startup(self) -> None:
         if self.db_enabled:
