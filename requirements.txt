@@ -1,4 +1,0 @@
-nextcord
-asyncpg
-aiohttp[speedups]
-jishaku
