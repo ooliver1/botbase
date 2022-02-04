@@ -43,7 +43,7 @@ class MultiSource(ListPageSource):
     def format_page(self, menu: MyMenu, commands: list[Command]) -> Embed:
         embed = Embed(
             title=self.title,
-            description=self.description,
+            description=f"{self.description}\n{menu.ctx.bot.helpinsert}",
             color=menu.ctx.bot.color,
         )
         for command in commands:

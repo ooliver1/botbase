@@ -106,6 +106,7 @@ class BotBase(Bot):
         self.helpindex: str = getattr(config, "helpindex", defaulthelpindex)
         self.helpfields: dict[str, str] = getattr(config, "helpfields", {})
         self.helptitle: str = getattr(config, "helptitle", "Help Me!")
+        self.helpinsert: str = getattr(config, "helpinsert", "")
         self.emojiset: Any = getattr(config, "emojiset", Emojis())
         self.logchannel: int = getattr(config, "logchannel", 921139782648725515)
 

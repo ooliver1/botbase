@@ -31,6 +31,8 @@ helptitle: str default "Help Me!"
 
 helpfields: dict[str, str] default {}
 
+helpinsert: str default ""
+
 emojiset: Emojis[str, str] default Emojis()
 
 logchannel: int default 921139782648725515
