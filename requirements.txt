@@ -1,4 +1,4 @@
 nextcord
 asyncpg
-aiohttp[speed]
+aiohttp[speedups]
 jishaku

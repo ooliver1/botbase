@@ -279,7 +279,6 @@ class MyHelp(HelpCommand):
             if cog is not None:
                 all_commands[cog] = sorted(children, key=lambda c: c.qualified_name)
 
-
         menu = HelpView(FrontPageSource(), ctx=self.context, cmds=all_commands)  # type: ignore
         await menu.start(self.context)
 
