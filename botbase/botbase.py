@@ -286,7 +286,6 @@ class BotBase(Bot):
             a = await self.db.fetchval(
                 "SELECT * FROM commands WHERE member=$1 AND channel IS NULL and guild IS NULL", ctx.author.id
             )
-            log.info(a)
             if a is None:
                 await self.db.execute(
                     """INSERT INTO commands (command, guild, channel, member, amount) 
@@ -297,14 +296,12 @@ class BotBase(Bot):
                     ctx.author.id,
                     1,
                 )
-                log.info("insert")
             else:
                 await self.db.execute(
                     """UPDATE commands SET amount = commands.amount + 1 
                     WHERE member=$1 AND channel IS NULL and guild IS NULL""",
                     ctx.author.id,
                 )
-                log.info("update")
 
     async def on_guild_join(self, guild: Guild):
         if self.blacklist and guild.id in self.blacklist.guilds:
