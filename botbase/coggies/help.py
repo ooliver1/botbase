@@ -83,7 +83,7 @@ class FrontPageSource(PageSource):
     def format_page(self, menu: MyMenu, _) -> Embed:
         assert menu.ctx.bot.user is not None
         embed = Embed(
-            title=menu.ctx.bot.helptitle,
+            title=menu.ctx.bot.helptitle.format(name=menu.ctx.bot.user.name),
             description=menu.ctx.bot.helpmsg.format(
                 prefix=menu.ctx.clean_prefix, name=menu.ctx.bot.user.name
             ),

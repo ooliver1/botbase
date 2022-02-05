@@ -105,7 +105,7 @@ class BotBase(Bot):
         self.helpmsg: str = getattr(config, "helpmsg", defaulthelpmsg)
         self.helpindex: str = getattr(config, "helpindex", defaulthelpindex)
         self.helpfields: dict[str, str] = getattr(config, "helpfields", {})
-        self.helptitle: str = getattr(config, "helptitle", "Help Me!")
+        self.helptitle: str = getattr(config, "helptitle", "Help Me {name}!")
         self.helpinsert: str = getattr(config, "helpinsert", "")
         self.emojiset: Any = getattr(config, "emojiset", Emojis())
         self.logchannel: int = getattr(config, "logchannel", 921139782648725515)
@@ -129,7 +129,7 @@ class BotBase(Bot):
 
         self.loop.create_task(self.startup())
 
-    def asyncio_handler(self, loop, context):
+    def asyncio_handler(self, _, context: dict) -> None:
         log = getLogger("notasyncio")
         if context["message"] == "Unclosed client session":
             return
@@ -140,7 +140,7 @@ class BotBase(Bot):
             + "\n".join(
                 f"{k}: {v}"
                 for k, v in context.items()
-                if k != "message" and k is not None and v is not None
+                if k != "message" and k is not None and v is not None and k != "None"
             )
         )
 
