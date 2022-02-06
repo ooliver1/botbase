@@ -7,6 +7,7 @@ from .emojis import Emojis
 from .exceptions import Blacklisted
 from .wraps import (
     MyContext,
+    MyInter,
     WrappedChannel,
     WrappedMember,
     WrappedUser,
@@ -15,7 +16,7 @@ from .wraps import (
 )
 
 
-__version__ = "1.3.0"
+__version__ = "1.3.1"
 
 
 getLogger(__name__).addHandler(NullHandler())
