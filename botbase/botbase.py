@@ -274,13 +274,6 @@ class BotBase(Bot):
             super().dispatch(event_name, *args, **kwargs)
 
     async def on_command_completion(self, ctx: MyContext):
-        if ctx.guild is None:
-            guild_id = None
-            channel_id = None
-        else:
-            guild_id = ctx.guild.id
-            channel_id = ctx.channel.id
-
         if ctx.guild is not None:
             await self.db.execute(
                 """INSERT INTO commands (command, guild, channel, member, amount) 
@@ -288,29 +281,29 @@ class BotBase(Bot):
                 ON CONFLICT (command, guild, channel, member) DO UPDATE
                     SET amount = commands.amount + 1""",
                 ctx.command.qualified_name,  # type: ignore
-                guild_id,
-                channel_id,
+                ctx.guild.id,
+                ctx.channel.id,
                 ctx.author.id,
                 1,
             )
         else:
             a = await self.db.fetchval(
-                "SELECT * FROM commands WHERE member=$1", ctx.author.id
+                "SELECT * FROM commands WHERE member=$1 AND channel IS NULL and guild IS NULL", ctx.author.id
             )
             if a is None:
                 await self.db.execute(
                     """INSERT INTO commands (command, guild, channel, member, amount) 
                     VALUES ($1,$2,$3,$4,$5)""",
                     ctx.command.qualified_name,  # type: ignore
-                    guild_id,
-                    channel_id,
+                    None,
+                    None,
                     ctx.author.id,
                     1,
                 )
             else:
                 await self.db.execute(
                     """UPDATE commands SET amount = commands.amount + 1 
-                    WHERE member=$1""",
+                    WHERE member=$1 AND channel IS NULL and guild IS NULL""",
                     ctx.author.id,
                 )
 
