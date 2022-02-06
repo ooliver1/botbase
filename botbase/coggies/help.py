@@ -250,7 +250,7 @@ class MyHelp(HelpCommand):
     def get_command_signature(self, command: Command | Group) -> str:
         name = command.qualified_name
         if command.aliases:
-            name = f"{{{name}|{'|'.join(command.aliases)}}}"
+            name = f"{{ {name} | {' | '.join(command.aliases)} }}"
         return f"{self.context.clean_prefix}{name} {command.signature}"
 
     async def send_bot_help(self, mapping: dict[Cog, Command]) -> None:
