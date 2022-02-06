@@ -48,8 +48,6 @@ class MultiSource(ListPageSource):
         )
         for command in commands:
             name = command.qualified_name
-            if command.aliases:
-                name = f"{{{name}|{'|'.join(command.aliases)}}}"
             signature = f"{self.prefix}{name} {command.signature}"
             embed.add_field(
                 name=signature,
@@ -334,7 +332,9 @@ class MyHelp(HelpCommand):
 
         if isinstance(embed, Embed):
             if command.aliases:
-                embed.add_field(name="Aliases", value=", ".join(command.aliases), inline=False)
+                embed.add_field(
+                    name="Aliases", value=", ".join(command.aliases), inline=False
+                )
             if e := command.extras.get("example"):
                 embed.add_field(name="Example", value=e, inline=False)
 
