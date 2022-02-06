@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
 class MyInter(wrap.Wrap, Interaction):
     user: WrappedUser | WrappedMember
+    author: WrappedUser | WrappedMember
 
     @property
     def _bot(self) -> BotBase:

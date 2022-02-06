@@ -260,6 +260,8 @@ class BotBase(Bot):
         if i.user:
             i.user = self.get_wrapped_person(i.user)
 
+        i.author = i.user
+
         return i
 
     def dispatch(self, event_name: str, *args: Any, **kwargs: Any) -> None:
