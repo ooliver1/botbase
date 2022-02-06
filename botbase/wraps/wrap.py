@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from nextcord import Message, Embed
+from nextcord.utils import utcnow
 from nextcord.embeds import _EmptyEmbed
 
 if TYPE_CHECKING:
@@ -51,6 +52,7 @@ class Wrap:
     ) -> Message:
         from .context import MyContext
         from .channel import WrappedChannel
+        from .inter import MyInter
         from .thread import WrappedThread
         from .member import WrappedMember
         from .user import WrappedUser
@@ -68,6 +70,8 @@ class Wrap:
         if contain_timestamp and isinstance(self, MyContext):
             # Doesnt work on Channels, Users, Members
             embed.timestamp = self.message.created_at
+        elif contain_timestamp:
+            embed.timestamp = utcnow()
 
         if include_command_invoker and not isinstance(
             self, (WrappedChannel, WrappedThread)
@@ -75,6 +79,9 @@ class Wrap:
             if isinstance(self, (MyContext)):
                 text = self.author.display_name
                 icon_url = self.author.display_avatar.url
+            elif isinstance(self, MyInter):
+                text = self.user.display_name
+                icon_url = self.user.display_avatar.url
             elif isinstance(self, (WrappedUser, WrappedMember)):
                 text = self.display_name
                 icon_url = self.display_avatar.url
@@ -94,6 +101,7 @@ class Wrap:
                 WrappedMember,
                 WrappedChannel,
                 WrappedThread,
+                MyInter,
             ),
         ):
             return await target.send(embed=embed, **kwargs)

@@ -9,13 +9,13 @@ from typing import TYPE_CHECKING
 import jishaku
 from aiohttp import ClientSession
 from asyncpg import create_pool
-from nextcord import Embed, Member, Thread, User, abc
+from nextcord import Embed, Member, Thread, User, abc, Interaction
 from nextcord.ext.commands import Bot, when_mentioned_or
 
 from .blacklist import Blacklist
 from .emojis import Emojis
 from .exceptions import Blacklisted
-from .wraps import MyContext, WrappedChannel, WrappedMember, WrappedThread, WrappedUser
+from .wraps import MyContext, WrappedChannel, WrappedMember, WrappedThread, WrappedUser, MyInter
 
 if TYPE_CHECKING:
     from typing import Any, Callable, Optional, Union
@@ -112,6 +112,7 @@ class BotBase(Bot):
 
         self._single_events: dict[str, Callable] = {
             "on_message": self.get_wrapped_message,
+            "on_interaction": self.get_wrapped_interaction
         }
         self._double_events: dict[str, Callable] = {
             "on_message_edit": lambda before, after: (
@@ -253,6 +254,9 @@ class BotBase(Bot):
         message.author = self.get_wrapped_person(message.author)
 
         return message
+
+    def get_wrapped_interaction(self, inter: Interaction) -> MyInter:
+        return MyInter(inter, self)
 
     def dispatch(self, event_name: str, *args: Any, **kwargs: Any) -> None:
         _name = f"on_{event_name}"
