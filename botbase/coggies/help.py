@@ -334,9 +334,9 @@ class MyHelp(HelpCommand):
 
         if isinstance(embed, Embed):
             if command.aliases:
-                embed.add_field("Aliases", ", ".join(command.aliases), inline=False)
+                embed.add_field(name="Aliases", value=", ".join(command.aliases), inline=False)
             if e := command.extras.get("example"):
-                embed.add_field("Example", e, inline=False)
+                embed.add_field(name="Example", value=e, inline=False)
 
 
 class Help(Cog, name="help", description="Get some help!"):
