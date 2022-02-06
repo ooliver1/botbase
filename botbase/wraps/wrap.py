@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from nextcord import Message, Embed
+from nextcord import Message, Embed, WebhookMessage
 from nextcord.utils import utcnow
 from nextcord.embeds import _EmptyEmbed
 
@@ -49,7 +49,7 @@ class Wrap:
         contain_timestamp: bool = True,
         include_command_invoker: bool = True,
         **kwargs,
-    ) -> Message:
+    ) -> Message | WebhookMessage | None:
         from .context import MyContext
         from .channel import WrappedChannel
         from .inter import MyInter

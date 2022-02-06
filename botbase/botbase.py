@@ -256,7 +256,11 @@ class BotBase(Bot):
         return message
 
     def get_wrapped_interaction(self, inter: Interaction) -> MyInter:
-        return MyInter(inter, self)
+        i = MyInter(inter, self)
+        if i.user:
+            i.user = self.get_wrapped_person(i.user)
+
+        return i
 
     def dispatch(self, event_name: str, *args: Any, **kwargs: Any) -> None:
         _name = f"on_{event_name}"

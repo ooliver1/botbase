@@ -8,13 +8,12 @@ from . import wrap
 
 if TYPE_CHECKING:
     from ..botbase import BotBase
+    from .user import WrappedUser
+    from .member import WrappedMember
 
 
-class MyInter(Interaction, wrap.Wrap):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.user = self.bot.get_wrapped_person(self.user)
+class MyInter(wrap.Wrap, Interaction):
+    user: WrappedUser | WrappedMember
 
     @property
     def _bot(self) -> BotBase:
@@ -22,3 +21,6 @@ class MyInter(Interaction, wrap.Wrap):
 
     def bot(self) -> BotBase:
         return self.client  # type: ignore
+
+    def __getattr__(self, item):
+        return getattr(self._wrapped, item)
