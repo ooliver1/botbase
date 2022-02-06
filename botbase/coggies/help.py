@@ -249,8 +249,6 @@ class MyHelp(HelpCommand):
 
     def get_command_signature(self, command: Command | Group) -> str:
         name = command.qualified_name
-        if command.aliases:
-            name = f"{{ {name} | {' | '.join(command.aliases)} }}"
         return f"{self.context.clean_prefix}{name} {command.signature}"
 
     async def send_bot_help(self, mapping: dict[Cog, Command]) -> None:
@@ -333,6 +331,12 @@ class MyHelp(HelpCommand):
             embed.description = f"{command.description}\n\n{command.help}"
         else:
             embed.description = command.help or "No help found..."
+
+        if isinstance(embed, Embed):
+            if command.aliases:
+                embed.add_field("Aliases", ", ".join(command.aliases), inline=False)
+            if e := command.extras.get("example"):
+                embed.add_field("Example", e, inline=False)
 
 
 class Help(Cog, name="help", description="Get some help!"):
