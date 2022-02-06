@@ -5,6 +5,7 @@ from logging import CRITICAL, INFO, Formatter, getLogger
 from logging.handlers import RotatingFileHandler
 from textwrap import dedent
 from typing import TYPE_CHECKING
+from random import choice
 
 import jishaku
 from aiohttp import ClientSession
@@ -14,7 +15,6 @@ from nextcord.ext.commands import Bot, when_mentioned_or
 
 from .blacklist import Blacklist
 from .emojis import Emojis
-from .exceptions import Blacklisted
 from .wraps import MyContext, WrappedChannel, WrappedMember, WrappedThread, WrappedUser, MyInter
 
 if TYPE_CHECKING:
@@ -99,7 +99,7 @@ class BotBase(Bot):
 
         self.version: str = getattr(config, "version", "0.0.0")
         self.aiohttp_enabled: bool = getattr(config, "aiohttp_enabled", True)
-        self.color: int = getattr(config, "color", 0x9966CC)
+        self.colors: list[int] = getattr(config, "colors", [0x9966cc])
         self.blacklist_enabled: bool = getattr(config, "blacklist_enabled", True)
         self.default_pre: list[str] = getattr(config, "prefix")
         self.helpmsg: str = getattr(config, "helpmsg", defaulthelpmsg)
@@ -129,6 +129,10 @@ class BotBase(Bot):
             self.blacklist = None
 
         self.loop.create_task(self.startup())
+
+    @property
+    def color(self) -> int:
+        return choice(self.colors)
 
     def asyncio_handler(self, _, context: dict) -> None:
         log = getLogger("notasyncio")
