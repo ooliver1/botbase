@@ -38,9 +38,9 @@ class Wrap:
     def __hash__(self):
         return hash(self._wrapped)
 
-    async def send_author_embed(self, text: str):
+    async def send_author_embed(self, text: str, **kwargs):
         return await self.send_embed(
-            author=text, cmd_invoker=False, invoker_in_author=True
+            author=text, cmd_invoker=False, invoker_in_author=True, **kwargs
         )
 
     async def send_embed(
