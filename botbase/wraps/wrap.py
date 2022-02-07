@@ -97,21 +97,18 @@ class Wrap:
 
         if author:
             if isinstance(self, (MyContext)):
-                name = self.author.display_name
                 icon_url = self.author.display_avatar.url
             elif isinstance(self, MyInter):
-                name = self.user.display_name
                 icon_url = self.user.display_avatar.url
             elif isinstance(self, (WrappedUser, WrappedMember)):
-                name = self.display_name
                 icon_url = self.display_avatar.url
             else:
                 raise TypeError(f"{type(self).__name__} cannot get invoker")
 
             if author:
-                embed.set_author(name=name, icon_url=icon_url)
+                embed.set_author(name=author, icon_url=icon_url)
             else:
-                embed.set_author(name=name)
+                embed.set_author(name=author)
 
         if reply and isinstance(target, Message):
             return await target.reply(embed=embed, **kwargs)
