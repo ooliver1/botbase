@@ -97,6 +97,9 @@ class BotBase(Bot):
             self.db_args = ()
             self.db_kwargs = {}
 
+        if init := getattr(config, "init", None):
+            self.db_kwargs["init"] = init
+
         self.version: str = getattr(config, "version", "0.0.0")
         self.aiohttp_enabled: bool = getattr(config, "aiohttp_enabled", True)
         self.colors: list[int] = getattr(config, "colors", [0x9966cc])
