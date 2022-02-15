@@ -15,7 +15,14 @@ from nextcord.ext.commands import Bot, when_mentioned_or
 
 from .blacklist import Blacklist
 from .emojis import Emojis
-from .wraps import MyContext, WrappedChannel, WrappedMember, WrappedThread, WrappedUser, MyInter
+from .wraps import (
+    MyContext,
+    WrappedChannel,
+    WrappedMember,
+    WrappedThread,
+    WrappedUser,
+    MyInter,
+)
 
 if TYPE_CHECKING:
     from typing import Any, Callable, Optional, Union
@@ -102,7 +109,7 @@ class BotBase(Bot):
 
         self.version: str = getattr(config, "version", "0.0.0")
         self.aiohttp_enabled: bool = getattr(config, "aiohttp_enabled", True)
-        self.colors: list[int] = getattr(config, "colors", [0x9966cc])
+        self.colors: list[int] = getattr(config, "colors", [0x9966CC])
         self.blacklist_enabled: bool = getattr(config, "blacklist_enabled", True)
         self.default_pre: list[str] = getattr(config, "prefix")
         self.helpmsg: str = getattr(config, "helpmsg", defaulthelpmsg)
@@ -115,7 +122,7 @@ class BotBase(Bot):
 
         self._single_events: dict[str, Callable] = {
             "on_message": self.get_wrapped_message,
-            "on_interaction": self.get_wrapped_interaction
+            "on_interaction": self.get_wrapped_interaction,
         }
         self._double_events: dict[str, Callable] = {
             "on_message_edit": lambda before, after: (
@@ -301,7 +308,8 @@ class BotBase(Bot):
             )
         else:
             a = await self.db.fetchval(
-                "SELECT * FROM commands WHERE member=$1 AND channel IS NULL and guild IS NULL", ctx.author.id
+                "SELECT * FROM commands WHERE member=$1 AND channel IS NULL and guild IS NULL",
+                ctx.author.id,
             )
             if a is None:
                 await self.db.execute(
@@ -326,6 +334,8 @@ class BotBase(Bot):
             await guild.leave()
             return
 
+        assert guild.owner_id is not None
+
         embed = Embed(
             title="New Guild!",
             description=dedent(
@@ -334,7 +344,7 @@ class BotBase(Bot):
         **{guild.name}**
         id: `{guild.id}`
         members: `{guild.member_count}`
-        owner: `{await self.fetch_user(guild.owner_id)}`  # type: ignore
+        owner: `{guild.owner or await self.fetch_user(guild.owner_id)}`
 
         """
             ),
@@ -346,6 +356,8 @@ class BotBase(Bot):
         if guild.unavailable:
             return
 
+        assert guild.owner_id is not None
+
         embed = Embed(
             title="Removed Guild :(",
             description=dedent(
@@ -354,7 +366,7 @@ class BotBase(Bot):
         **{guild.name}**
         id: `{guild.id}`
         members: `{guild.member_count}`
-        owner: `{await self.fetch_user(guild.owner_id)}`  # type: ignore
+        owner: `{guild.owner or await self.fetch_user(guild.owner_id)}`
 
         """
             ),
