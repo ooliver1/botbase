@@ -331,6 +331,7 @@ class BotBase(Bot):
         **{guild.name}**
         id: `{guild.id}`
         members: `{guild.member_count}`
+        owner: `{await self.bot.fetch_user(guild.owner_id)}`
 
         """
             ),
@@ -350,6 +351,7 @@ class BotBase(Bot):
         **{guild.name}**
         id: `{guild.id}`
         members: `{guild.member_count}`
+        owner: `{await self.bot.fetch_user(guild.owner_id)}`
 
         """
             ),
