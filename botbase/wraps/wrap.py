@@ -38,16 +38,25 @@ class Wrap:
     def __hash__(self):
         return hash(self._wrapped)
 
+    async def send_author_embed(self, text: str, **kwargs):
+        return await self.send_embed(
+            author=text, cmd_invoker=False, invoker_in_author=True, **kwargs
+        )
+
     async def send_embed(
         self,
         title: str | _EmptyEmbed = Embed.Empty,
         desc: str | _EmptyEmbed = Embed.Empty,
         *,
+        author: str = None,
+        image: str = None,
+        thumbnail: str = None,
         color=None,
         target=None,
         reply: bool = False,
         contain_timestamp: bool = True,
-        include_command_invoker: bool = True,
+        cmd_invoker: bool = True,
+        invoker_in_author: bool = False,
         **kwargs,
     ) -> Message | WebhookMessage | None:
         from .context import MyContext
@@ -73,9 +82,7 @@ class Wrap:
         elif contain_timestamp:
             embed.timestamp = utcnow()
 
-        if include_command_invoker and not isinstance(
-            self, (WrappedChannel, WrappedThread)
-        ):
+        if cmd_invoker and not isinstance(self, (WrappedChannel, WrappedThread)):
             if isinstance(self, (MyContext)):
                 text = self.author.display_name
                 icon_url = self.author.display_avatar.url
@@ -89,6 +96,26 @@ class Wrap:
                 raise TypeError(f"{type(self).__name__} cannot get invoker")
 
             embed.set_footer(text=text, icon_url=icon_url)
+
+        if author:
+            if isinstance(self, (MyContext)):
+                icon_url = self.author.display_avatar.url
+            elif isinstance(self, MyInter):
+                icon_url = self.user.display_avatar.url
+            elif isinstance(self, (WrappedUser, WrappedMember)):
+                icon_url = self.display_avatar.url
+            else:
+                raise TypeError(f"{type(self).__name__} cannot get invoker")
+
+            if invoker_in_author:
+                embed.set_author(name=author, icon_url=icon_url)
+            else:
+                embed.set_author(name=author)
+
+        if image:
+            embed.set_image(url=image)
+        if thumbnail:
+            embed.set_thumbnail(url=thumbnail)
 
         if reply and isinstance(target, Message):
             return await target.reply(embed=embed, **kwargs)
