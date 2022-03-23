@@ -213,6 +213,16 @@ class BotBase(Bot):
 
         await self.invoke(ctx)
 
+    async def on_interaction(self, interaction: Interaction) -> None:
+        i = self.get_wrapped_interaction(interaction)
+
+        if self.blacklist and i.author.id in self.blacklist:
+            return log.debug("Ignoring blacklisted user %s", i.author.id)
+        elif self.blacklist and i.guild and i.guild.id in self.blacklist:
+            return log.debug("Ignoring blacklisted guild %s", i.guild.id)
+
+        await self.process_application_commands(i)
+
     async def getch_member(self, guild_id: int, member_id: int) -> WrappedMember:
         guild = await self.getch_guild(guild_id)
         member = guild.get_member(member_id)
