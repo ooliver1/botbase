@@ -14,9 +14,10 @@ from .wraps import (
     WrappedThread,
     Wrap,
 )
+from .checks import *
 
 
-__version__ = "1.7.0"
+__version__ = "1.7.1"
 
 
 getLogger(__name__).addHandler(NullHandler())
