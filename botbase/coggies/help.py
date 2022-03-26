@@ -1,22 +1,20 @@
 from __future__ import annotations
 
 from difflib import get_close_matches
-from inspect import cleandoc
 from itertools import groupby
 from sys import stderr
 from traceback import print_exception
 from typing import TYPE_CHECKING
 from logging import getLogger
 
-from nextcord import ButtonStyle, Embed
-from nextcord.ext.commands import Cog, HelpCommand, command
+from nextcord import ButtonStyle, Embed, Interaction
+from nextcord.ext.commands import Cog, HelpCommand
 from nextcord.ext.menus import ButtonMenuPages, ListPageSource, PageSource
 from nextcord.ui import Select, Button
 from nextcord.utils import format_dt
 from botbase import MyContext
 
 if TYPE_CHECKING:
-    from nextcord import Interaction, Message
     from nextcord.ext.commands import Command, Group
     from nextcord.ui import Item
 

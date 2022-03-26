@@ -37,7 +37,6 @@ T = TypeVar("T")
 Coro = Coroutine[Any, Any, T]
 CoroFunc = Callable[..., Coro[Any]]
 MaybeCoro = Union[T, Coro[T]]
-ApplicationSubcommand
 CT = TypeVar("CT", bound=Union[Interaction, Context])
 CH = TypeVar("CH", ApplicationSubcommand, Command, CoroFunc)
 
