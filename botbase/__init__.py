@@ -17,7 +17,7 @@ from .wraps import (
 from .checks import *
 
 
-__version__ = "1.8.0"
+__version__ = "1.8.1"
 
 
 getLogger(__name__).addHandler(NullHandler())
@@ -31,4 +31,4 @@ class VersionInfo(NamedTuple):
     serial: int
 
 
-version_info = VersionInfo(major=0, minor=1, micro=0, releaselevel="alpha", serial=0)
+version_info = VersionInfo(major=1, minor=8, micro=1, releaselevel="final", serial=0)
