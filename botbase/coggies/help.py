@@ -273,7 +273,10 @@ class MyHelp(HelpCommand):
                 all_commands[cog] = sorted(children, key=lambda c: c.qualified_name)
 
         menu = HelpView(FrontPageSource(), ctx=self.context, cmds=all_commands)  # type: ignore
-        await menu.start(self.context)
+        if isinstance(self.context, Interaction):
+            await menu.start(interaction=self.context)
+        else:
+            await menu.start(self.context)
 
     async def send_cog_help(self, cog: Cog):
         entries: list[Command] = [
@@ -286,7 +289,10 @@ class MyHelp(HelpCommand):
             cmds={cog: entries},
             ctx=self.context,
         )
-        await menu.start(self.context)
+        if isinstance(self.context, Interaction):
+            await menu.start(interaction=self.context)
+        else:
+            await menu.start(self.context)
 
     async def send_command_help(self, command):
         embed = Embed(colour=self.context.bot.color)
@@ -305,7 +311,10 @@ class MyHelp(HelpCommand):
         source = MultiSource(group, entries, prefix=self.context.clean_prefix)
         self.common_command_formatting(source, group)
         menu = HelpView(source, ctx=self.context, cmds={group: entries})
-        await menu.start(self.context)
+        if isinstance(self.context, Interaction):
+            await menu.start(interaction=self.context)
+        else:
+            await menu.start(self.context)
 
     async def send_error_message(self, error: Exception) -> None:
         if "command" in self.context.kwargs:
