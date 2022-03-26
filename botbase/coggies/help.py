@@ -32,7 +32,7 @@ class MyMenu(ButtonMenuPages):
 
 class MultiSource(ListPageSource):
     def __init__(
-        self, multi: Group | Cog, commands: list[Command], *, prefix: str  None = None
+        self, multi: Group | Cog, commands: list[Command], *, prefix: str | None = None
     ):
         super().__init__(entries=commands, per_page=5)
         self.multi = multi
