@@ -36,3 +36,5 @@ helpinsert: str default ""
 emojiset: Emojis[str, str] default Emojis()
 
 logchannel: int default 921139782648725515
+
+guild_ids list[int] default None

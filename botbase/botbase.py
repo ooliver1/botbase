@@ -70,7 +70,7 @@ class BotBase(Bot):
         )
         h.setFormatter(
             Formatter(
-                "%(levelname)-7s %(asctime)s %(filename)12s:%(funcName)-16s: %(message)s",
+                "%(levelname)-7s %(asctime)s %(filename)12s:%(funcName)-28s: %(message)s",
                 datefmt="%H:%M:%S %d/%m/%Y",
             )
         )
@@ -119,6 +119,7 @@ class BotBase(Bot):
         self.helpinsert: str = getattr(config, "helpinsert", "")
         self.emojiset: Any = getattr(config, "emojiset", Emojis())
         self.logchannel: int = getattr(config, "logchannel", 921139782648725515)
+        self.guild_ids: list[int] | None = getattr(config, "guild_ids", None)
 
         self._single_events: dict[str, Callable] = {
             "on_message": self.get_wrapped_message,
@@ -132,6 +133,7 @@ class BotBase(Bot):
         }
 
         self.load_extension("jishaku")
+        self.load_extension("nextcord.ext.help")
         self.load_extension("botbase.coggies.help")
 
         if self.blacklist_enabled:
