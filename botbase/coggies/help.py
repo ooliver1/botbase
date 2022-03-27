@@ -4,7 +4,7 @@ from difflib import get_close_matches
 from itertools import groupby
 from sys import stderr
 from traceback import print_exception
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 from logging import getLogger
 
 from nextcord import ButtonStyle, Embed, Interaction
@@ -12,13 +12,11 @@ from nextcord.ext.commands import Cog, HelpCommand
 from nextcord.ext.menus import ButtonMenuPages, ListPageSource, PageSource
 from nextcord.ui import Select, Button
 from nextcord.utils import format_dt
-from botbase import MyContext
+from botbase import MyContext, BotBase
 
 if TYPE_CHECKING:
     from nextcord.ext.commands import Command, Group
     from nextcord.ui import Item
-
-    from ..botbase import BotBase
 
 
 log = getLogger(__name__)
@@ -77,27 +75,39 @@ class FrontPageSource(PageSource):
         return self
 
     def format_page(self, menu: MyMenu, _) -> Embed:
-        assert menu.ctx.bot.user is not None
+        bt = (
+            menu.ctx.bot
+            if menu.ctx
+            else menu.interaction.client
+            if menu.interaction
+            else False
+        )
+        if not bt:
+            raise RuntimeError("Why are we here just to suffer?")
+
+        clean_prefix = menu.ctx.clean_prefix if menu.ctx else "/"
+
+        bot = cast(BotBase, bt)
+        assert bot.user is not None
+
         embed = Embed(
-            title=menu.ctx.bot.helptitle.format(name=menu.ctx.bot.user.name),
-            description=menu.ctx.bot.helpmsg.format(
-                prefix=menu.ctx.clean_prefix, name=menu.ctx.bot.user.name
-            ),
-            color=menu.ctx.bot.color,
+            title=bot.helptitle.format(name=bot.user.name),
+            description=bot.helpmsg.format(prefix=clean_prefix, name=bot.user.name),
+            color=bot.color,
         )
 
-        for name, value in menu.ctx.bot.helpfields.items():
+        for name, value in bot.helpfields.items():
             embed.add_field(
                 name=name,
                 value=value,
                 inline=False,
             )
 
-        created_at = format_dt(menu.ctx.bot.user.created_at, "F")
+        created_at = format_dt(bot.user.created_at, "F")
         if self.index == 0:
             embed.add_field(
                 name="Who are you?",
-                value=menu.ctx.bot.helpindex.format(created_at=created_at),
+                value=bot.helpindex.format(created_at=created_at),
                 inline=False,
             )
         elif self.index == 1:
