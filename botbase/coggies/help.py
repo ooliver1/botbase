@@ -12,7 +12,7 @@ from nextcord.ext.commands import Cog, HelpCommand
 from nextcord.ext.menus import ButtonMenuPages, ListPageSource, PageSource
 from nextcord.ui import Select, Button
 from nextcord.utils import format_dt
-from botbase import MyContext, BotBase
+from botbase import MyContext, BotBase, MyInter
 
 if TYPE_CHECKING:
     from nextcord.ext.commands import Command, Group
@@ -24,6 +24,7 @@ log = getLogger(__name__)
 
 class MyMenu(ButtonMenuPages):
     ctx: MyContext
+    interaction: MyInter
 
 
 class MultiSource(ListPageSource):
@@ -37,10 +38,11 @@ class MultiSource(ListPageSource):
         self.description = self.multi.description
 
     def format_page(self, menu: MyMenu, commands: list[Command]) -> Embed:
+        ctx = menu.ctx if menu.ctx else menu.interaction
         embed = Embed(
             title=self.title,
-            description=f"{self.description}\n{menu.ctx.bot.helpinsert}",
-            color=menu.ctx.bot.color,
+            description=f"{self.description}\n{ctx.bot.helpinsert}",
+            color=ctx.bot.color,
         )
         for command in commands:
             name = command.qualified_name
@@ -132,7 +134,7 @@ class FrontPageSource(PageSource):
         return embed
 
 
-class HelpSelect(Select):
+class HelpSelect(Select["HelpView"]):
     def __init__(
         self, commands: dict[Cog | Group, list[Command]], bot: BotBase
     ) -> None:
@@ -183,7 +185,7 @@ class HelpSelect(Select):
                 )
                 return
 
-            source = MultiSource(cog, commands, prefix=self.view.ctx.clean_prefix)
+            source = MultiSource(cog, commands, prefix=self.view._ctx.clean_prefix)
             await self.view.change_source(source)
             await interaction.response.pong()
 
@@ -202,7 +204,9 @@ class HelpView(ButtonMenuPages):
             for child in children:
                 self.add_item(child)
             # HACK
+
         self.ctx = ctx
+        self._ctx = ctx
 
     async def on_error(
         self, error: Exception, item: Item, interaction: Interaction
@@ -219,20 +223,14 @@ class HelpView(ButtonMenuPages):
 
     async def interaction_check(self, interaction: Interaction) -> bool:
         if interaction.user and interaction.user.id in (
-            self.ctx.bot.owner_id,
-            self.ctx.author.id,
+            self._ctx.bot.owner_id,
+            self._ctx.author.id,
         ):
             return True
-        if self.ctx.command is not None:
-            await interaction.response.send_message(
-                f"This menu is for {self.ctx.author.mention}, use {self.ctx.command.name} to have a menu to yourself.",
-                ephemeral=True,
-            )
-        else:
-            await interaction.response.send_message(
-                f"This menu is for {self.ctx.author.mention}.",
-                ephemeral=True,
-            )
+        await interaction.response.send_message(
+            f"This menu is for {self._ctx.author.mention}, use {self._ctx.clean_prefix}help to have a menu to yourself.",
+            ephemeral=True,
+        )
         return False
 
     async def on_timeout(self):
