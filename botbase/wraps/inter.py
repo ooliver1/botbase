@@ -7,6 +7,8 @@ from nextcord import Interaction
 from . import wrap
 
 if TYPE_CHECKING:
+    from nextcord import VoiceProtocol
+
     from ..botbase import BotBase
     from .user import WrappedUser
     from .member import WrappedMember
@@ -28,6 +30,10 @@ class MyInter(wrap.Wrap, Interaction):
 
     def bot(self) -> BotBase:
         return self.client  # type: ignore
+
+    @property
+    def voice_client(self) -> VoiceProtocol | None:
+        return self.guild and self.guild.voice_client
 
     def __getattr__(self, item):
         return getattr(self._wrapped, item)
