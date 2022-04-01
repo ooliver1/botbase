@@ -202,6 +202,9 @@ class BotBase(Bot):
             prefix = bot.default_pre
         return when_mentioned_or(*prefix)(bot, message)
 
+    async def on_application_command_error(*_):
+        ...  # hope an event handler exists
+
     async def process_commands(self, message: Message) -> None:
         if message.author.bot:
             return
