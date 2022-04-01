@@ -42,10 +42,9 @@ class MyInter(wrap.Wrap, Interaction):
         return self.guild.me if self.guild is not None else self.bot.user  # type: ignore
 
     @property
-    def command(self) -> ApplicationCommand | None:
+    def command(self) -> str | None:
         if self.data:
-            if name := self.data.get("name"):
-                return get(self.bot.get_application_commands(), name=name)
+            return self.data.get("name")
 
     def __getattr__(self, item):
         return getattr(self._wrapped, item)
