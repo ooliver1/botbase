@@ -36,7 +36,7 @@ class MyInter(wrap.Wrap, Interaction):
         return self.guild and self.guild.voice_client
 
     @property
-    def cog(self) -> ClientUser | Member:
+    def me(self) -> ClientUser | Member:
         return self.guild.me if self.guild is not None else self.bot.user  # type: ignore
 
     def __getattr__(self, item):
