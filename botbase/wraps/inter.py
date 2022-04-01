@@ -18,6 +18,8 @@ if TYPE_CHECKING:
 class MyInter(wrap.Wrap, Interaction):
     user: WrappedUser | WrappedMember
     author: WrappedUser | WrappedMember
+    prefix = "/"
+    clean_prefix = "/"
 
     def __init__(self, wrapped, bot: BotBase):
         self._wrapped = wrapped
