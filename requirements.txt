@@ -1,1 +1,1 @@
-botbase @ git+https://github.com/ooliver1/nextcord-ext-help/archive/master.zip
+nextcord-ext-help @ git+https://github.com/ooliver1/nextcord-ext-help
