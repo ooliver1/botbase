@@ -7,7 +7,7 @@ from nextcord import Interaction
 from . import wrap
 
 if TYPE_CHECKING:
-    from nextcord import VoiceProtocol
+    from nextcord import VoiceProtocol, ClientUser, Member
 
     from ..botbase import BotBase
     from .user import WrappedUser
@@ -34,6 +34,10 @@ class MyInter(wrap.Wrap, Interaction):
     @property
     def voice_client(self) -> VoiceProtocol | None:
         return self.guild and self.guild.voice_client
+
+    @property
+    def cog(self) -> ClientUser | Member:
+        return self.guild.me if self.guild is not None else self.bot.user  # type: ignore
 
     def __getattr__(self, item):
         return getattr(self._wrapped, item)
