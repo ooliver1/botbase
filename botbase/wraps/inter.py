@@ -28,6 +28,7 @@ class MyInter(wrap.Wrap, Interaction):
     def _bot(self) -> BotBase:
         return self.client  # type: ignore
 
+    @property
     def bot(self) -> BotBase:
         return self.client  # type: ignore
 
