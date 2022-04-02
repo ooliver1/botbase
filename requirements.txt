@@ -1,1 +1,0 @@
-nextcord-ext-help @ git+https://github.com/ooliver1/nextcord-ext-help

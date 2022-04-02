@@ -133,7 +133,6 @@ class BotBase(Bot):
         }
 
         self.load_extension("jishaku")
-        self.load_extension("nextcord.ext.help", extras={"guild_ids": self.guild_ids})
         self.load_extension("botbase.coggies.help")
 
         if self.blacklist_enabled:
