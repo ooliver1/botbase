@@ -2,7 +2,16 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from nextcord import Message, Embed, WebhookMessage
+from nextcord import (
+    Message,
+    Embed,
+    WebhookMessage,
+    TextChannel,
+    Thread,
+    DMChannel,
+    PartialMessageable,
+)
+from nextcord.abc import Messageable
 from nextcord.utils import utcnow
 from nextcord.embeds import _EmptyEmbed
 
@@ -10,6 +19,9 @@ if TYPE_CHECKING:
     from typing import Any
 
     from ..botbase import BotBase
+
+
+channels = (TextChannel, PartialMessageable, Thread, DMChannel, Messageable)
 
 
 class Wrap:
@@ -40,7 +52,11 @@ class Wrap:
 
     async def send_author_embed(self, text: str, **kwargs):
         return await self.send_embed(
-            author=text, cmd_invoker=False, invoker_in_author=True, **kwargs
+            author=text,
+            cmd_invoker=False,
+            invoker_in_author=True,
+            try_channel=True,
+            **kwargs,
         )
 
     async def send_embed(
@@ -48,15 +64,16 @@ class Wrap:
         title: str | _EmptyEmbed = Embed.Empty,
         desc: str | _EmptyEmbed = Embed.Empty,
         *,
-        author: str = None,
-        image: str = None,
-        thumbnail: str = None,
+        author: str | None = None,
+        image: str | None = None,
+        thumbnail: str | None = None,
         color=None,
         target=None,
         reply: bool = False,
         contain_timestamp: bool = True,
         cmd_invoker: bool = True,
         invoker_in_author: bool = False,
+        try_channel: bool = False,
         **kwargs,
     ) -> Message | WebhookMessage | None:
         from .context import MyContext
@@ -121,6 +138,11 @@ class Wrap:
             return await target.reply(embed=embed, **kwargs)
         elif isinstance(target, Message):
             return await target.channel.send(embed=embed, **kwargs)
+        elif try_channel and isinstance(target, MyInter) and target.response.is_done():
+            if isinstance(target.channel, channels):
+                return await target.channel.send(embed=embed, **kwargs)
+            else:
+                return await target.send(embed=embed, **kwargs)
         elif isinstance(
             target,
             (
