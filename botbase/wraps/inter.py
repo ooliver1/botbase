@@ -2,13 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from nextcord import Interaction
-from nextcord.utils import get
+from nextcord import Interaction, InteractionResponse
 
 from . import wrap
 
 if TYPE_CHECKING:
-    from nextcord import VoiceProtocol, ClientUser, Member, ApplicationCommand
+    from nextcord import VoiceProtocol, ClientUser, Member
 
     from ..botbase import BotBase
     from .user import WrappedUser
@@ -47,6 +46,10 @@ class MyInter(wrap.Wrap, Interaction):
     def command(self) -> str | None:
         if self.data:
             return self.data.get("name")
+
+    @property  # maybe this is why it no worky
+    def response(self) -> InteractionResponse:
+        return self._wrapped.response
 
     def __getattr__(self, item):
         return getattr(self._wrapped, item)
