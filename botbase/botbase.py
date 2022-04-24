@@ -3,25 +3,25 @@ from __future__ import annotations
 from importlib import import_module
 from logging import CRITICAL, INFO, Formatter, getLogger
 from logging.handlers import RotatingFileHandler
+from random import choice
 from textwrap import dedent
 from typing import TYPE_CHECKING
-from random import choice
 
 import jishaku
 from aiohttp import ClientSession
 from asyncpg import create_pool
-from nextcord import Embed, Member, Thread, User, abc, Interaction
+from nextcord import Embed, Interaction, Member, Thread, User, abc
 from nextcord.ext.commands import Bot, when_mentioned_or
 
 from .blacklist import Blacklist
 from .emojis import Emojis
 from .wraps import (
     MyContext,
+    MyInter,
     WrappedChannel,
     WrappedMember,
     WrappedThread,
     WrappedUser,
-    MyInter,
 )
 
 if TYPE_CHECKING:
@@ -54,8 +54,16 @@ class BotBase(Bot):
 
     def __init__(self, *args, config_module: str = "config", **kwargs) -> None:
         pre = kwargs.pop("command_prefix", self.get_pre)
+        saf = kwargs.pop("strip_after_prefix", True)
+        ca = kwargs.pop("case_insensitive", True)
 
-        super().__init__(*args, command_prefix=pre, **kwargs)
+        super().__init__(
+            *args,
+            command_prefix=pre,
+            strip_after_prefix=saf,
+            case_insensitive=ca,
+            **kwargs,
+        )
 
         self.prefix: dict[int, list[str]] = {}
 
