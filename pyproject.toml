@@ -19,6 +19,8 @@ botbase = "botbase.cli:main"
 
 [tool.poetry.dependencies]
 python = "^3.8"
+asyncpg = ">=0.25.0<0.26.0"
+nextcord = ">=2.0.0-alpha.10<3.0.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.3.0"

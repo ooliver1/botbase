@@ -118,7 +118,7 @@ class BotBase(Bot):
         self.helptitle: str = getattr(config, "helptitle", "Help Me {name}!")
         self.helpinsert: str = getattr(config, "helpinsert", "")
         self.emojiset: Any = getattr(config, "emojiset", Emojis())
-        self.logchannel: int = getattr(config, "logchannel", 921139782648725515)
+        self.logchannel: int | None = getattr(config, "logchannel", None)
         self.guild_ids: list[int] | None = getattr(config, "guild_ids", None)
 
         self._single_events: dict[str, Callable] = {
@@ -343,6 +343,9 @@ class BotBase(Bot):
                 )
 
     async def on_guild_join(self, guild: Guild):
+        if not self.logchannel:
+            return
+
         if self.blacklist and guild.id in self.blacklist.guilds:
             log.info("Leaving blacklisted Guild(id=%s)", guild.id)
             await guild.leave()
@@ -368,6 +371,9 @@ class BotBase(Bot):
 
     async def on_guild_remove(self, guild: Guild):
         if guild.unavailable:
+            return
+
+        if not self.logchannel:
             return
 
         assert guild.owner_id is not None
