@@ -11,7 +11,6 @@ classifiers = [
 ]
 packages = [
     {include = "botbase" },
-    {include = "botbase.coggies" },
     {include = "botbase.wraps" },
 ]
 
