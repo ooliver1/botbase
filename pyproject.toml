@@ -12,6 +12,7 @@ classifiers = [
 packages = [
     {include = "botbase" },
 ]
+readme = "README.md"
 
 [tool.poetry.scripts]
 botbase = "botbase.cli:main"
