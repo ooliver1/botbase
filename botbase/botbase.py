@@ -98,8 +98,10 @@ class BotBase(Bot):
             self.db_enabled = True
             self.db_args = (db_url,)
             self.db_kwargs = {}
-        elif (db_name := getattr(config, "db_name", None)) and (
-            db_user := getattr(config, "db_user", "ooliver")
+        elif (
+            (db_name := getattr(config, "db_name", None))
+            and (db_user := getattr(config, "db_user", "ooliver"))
+            and (db_host := getattr(config, "db_host", "localhost"))
         ):
             self.db_enabled = True
             self.db_args = ()

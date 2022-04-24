@@ -13,6 +13,8 @@ db_name: str either this or url
 
 db_user: str default "ooliver"
 
+db_host str default "localhost"
+
 version: str default "0.0.0"
 
 aiohttp_enabled: bool default True
@@ -21,7 +23,7 @@ color: int default 0x9966CC
 
 blacklist_enabled: bool default True
 
-prefix: str
+prefix: str | list[str]
 
 helpmsg: str default defaulthelpmsg
 
