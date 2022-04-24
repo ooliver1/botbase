@@ -1,5 +1,7 @@
 on: push
 
+name: Publish
+
 jobs:
   publish:
     name: Build and publish the package
