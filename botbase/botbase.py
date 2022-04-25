@@ -149,8 +149,6 @@ class BotBase(Bot):
             self.load_extension("botbase.coggies.blacklist")
             self.blacklist = None
 
-        self.loop.create_task(self.startup())
-
     @property
     def color(self) -> int:
         return choice(self.colors)
