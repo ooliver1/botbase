@@ -19,7 +19,7 @@ version: str default "0.0.0"
 
 aiohttp_enabled: bool default True
 
-color: int default 0x9966CC
+colors: list[int] default [0x9966CC]
 
 blacklist_enabled: bool default True
 
