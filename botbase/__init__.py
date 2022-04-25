@@ -17,7 +17,7 @@ from .wraps import (
 from .checks import *
 
 
-__version__ = "1.13.2"
+__version__ = "1.13.3"
 
 
 getLogger(__name__).addHandler(NullHandler())
