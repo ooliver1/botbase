@@ -3,11 +3,14 @@ from __future__ import annotations
 from importlib import import_module
 from logging import CRITICAL, INFO, Formatter, getLogger
 from logging.handlers import RotatingFileHandler
+from os import listdir
+from os.path import isfile
+from pathlib import Path
 from random import choice
+from sys import modules
 from textwrap import dedent
 from typing import TYPE_CHECKING
 
-import jishaku
 from aiohttp import ClientSession
 from asyncpg import create_pool
 from nextcord import Embed, Interaction, Member, Thread, User, abc
@@ -52,7 +55,22 @@ class BotBase(Bot):
     session: ClientSession
     blacklist: Optional[Blacklist]
 
-    def __init__(self, *args, config_module: str = "config", **kwargs) -> None:
+    @staticmethod
+    def get_config(config_module: str) -> tuple[str, str]:
+        file = modules["__main__"].__file__
+
+        if file is None:
+            raise RuntimeError("how")
+
+        path = Path(file)
+
+        if path.parts[-1] == "__main__.py":
+            mod = path.parts[-2]
+            return f"{mod}.{config_module}", mod
+        else:
+            return config_module, ""
+
+    def __init__(self, *args, config_module: str = "default", **kwargs) -> None:
         pre = kwargs.pop("command_prefix", self.get_pre)
         saf = kwargs.pop("strip_after_prefix", True)
         ca = kwargs.pop("case_insensitive", True)
@@ -88,7 +106,10 @@ class BotBase(Bot):
 
         self.loop.set_exception_handler(self.asyncio_handler)
 
-        config = import_module(config_module.rstrip(".py"))
+        cfg, mod = self.get_config(config_module.rstrip(".py"))
+        config = import_module(cfg)
+
+        self.mod = mod
 
         self.db_enabled: bool
         self.db_args: tuple[Any, ...]
@@ -182,6 +203,16 @@ class BotBase(Bot):
 
     def run(self, *args, **kwargs) -> None:
         self.loop.create_task(self.startup())
+
+        cog_dir = f"{self.mod}/cogs" if self.mod else "./cogs"
+        cogs_mod = f"{self.mod}.cogs" if self.mod else "cogs"
+
+        for filename in listdir(cog_dir):
+            if filename.endswith(".py"):
+                self.load_extension(f"{cogs_mod}.{filename[:-3]}")
+            else:
+                if isfile(filename):
+                    print(f"Unable to load {filename[:-3]}")
 
         super().run(*args, **kwargs)
 
