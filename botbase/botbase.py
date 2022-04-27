@@ -70,7 +70,7 @@ class BotBase(Bot):
         else:
             return config_module, ""
 
-    def __init__(self, *args, config_module: str = "default", **kwargs) -> None:
+    def __init__(self, *args, config_module: str = "config", **kwargs) -> None:
         pre = kwargs.pop("command_prefix", self.get_pre)
         saf = kwargs.pop("strip_after_prefix", True)
         ca = kwargs.pop("case_insensitive", True)
