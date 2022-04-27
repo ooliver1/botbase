@@ -316,6 +316,9 @@ class BotBase(Bot):
             super().dispatch(event_name, *args, **kwargs)
 
     async def on_command_completion(self, ctx: MyContext):
+        if not self.db_enabled:
+            return
+
         if ctx.guild is not None:
             await self.db.execute(
                 """INSERT INTO commands (command, guild, channel, member, amount) 
@@ -353,6 +356,8 @@ class BotBase(Bot):
     async def on_guild_join(self, guild: Guild):
         if not self.logchannel:
             return
+        elif not self.db_enabled:
+            return
 
         if self.blacklist and guild.id in self.blacklist.guilds:
             log.info("Leaving blacklisted Guild(id=%s)", guild.id)
@@ -382,6 +387,8 @@ class BotBase(Bot):
             return
 
         if not self.logchannel:
+            return
+        elif not self.db_enabled:
             return
 
         assert guild.owner_id is not None
