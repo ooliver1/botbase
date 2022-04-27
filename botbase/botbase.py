@@ -224,6 +224,9 @@ class BotBase(Bot):
 
     @staticmethod
     async def get_pre(bot: BotBase, message: Message) -> list[str]:
+        if not bot.db_enabled:
+            return bot.default_pre
+
         if message.guild is not None:
             try:
                 prefix = bot.prefix[message.guild.id]
