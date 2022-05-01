@@ -21,7 +21,7 @@ botbase = "botbase.cli:main"
 python = "^3.8"
 asyncpg = ">=0.25.0<0.26.0"
 nextcord = ">=2.0.0-alpha.10<3.0.0"
-jishaku = "^2.4.0"
+jishaku = {git = "https://github.com/gorialis/jishaku", rev = "0cc49781288c514d563d07c17a5eabfaf8fd6d29"}
 nextcord-ext-menus = "^1.5.2"
 
 [tool.poetry.dev-dependencies]
