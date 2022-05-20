@@ -50,6 +50,23 @@ I have been up since {created_at} and I serve for you!
 """
 
 
+def get_handler():
+    h = RotatingFileHandler(
+        "./logs/bot/io.log",
+        maxBytes=1000000,
+        backupCount=5,
+        encoding="utf-8",
+    )
+    h.setFormatter(
+        Formatter(
+            "%(levelname)-7s %(asctime)s %(filename)12s:%(funcName)-28s: %(message)s",
+            datefmt="%H:%M:%S %d/%m/%Y",
+        )
+    )
+    h.namer = lambda name: name.replace(".log", "") + ".log"
+    return h
+
+
 class BotBase(Bot):
     db: Pool
     session: ClientSession
@@ -88,19 +105,8 @@ class BotBase(Bot):
         log = getLogger()
         log.handlers = []
         log.setLevel(INFO)
-        h = RotatingFileHandler(
-            "./logs/bot/io.log",
-            maxBytes=1000000,
-            backupCount=5,
-            encoding="utf-8",
-        )
-        h.setFormatter(
-            Formatter(
-                "%(levelname)-7s %(asctime)s %(filename)12s:%(funcName)-28s: %(message)s",
-                datefmt="%H:%M:%S %d/%m/%Y",
-            )
-        )
-        h.namer = lambda name: name.replace(".log", "") + ".log"
+        h = get_handler()
+
         log.addHandler(h)
         getLogger("asyncio").setLevel(CRITICAL)
 
