@@ -2,7 +2,7 @@ from logging import NullHandler, getLogger
 from typing import NamedTuple, Literal
 
 
-from .botbase import BotBase
+from .botbase import BotBase, get_handler
 from .emojis import Emojis
 from .exceptions import Blacklisted
 from .wraps import (
