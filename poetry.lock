@@ -197,7 +197,7 @@ plugins = ["setuptools"]
 
 [[package]]
 name = "jishaku"
-version = "2.4.0"
+version = "2.5.0"
 description = "A discord.py extension including useful tools for bot development and debugging."
 category = "main"
 optional = false
@@ -343,7 +343,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "323cd72eb94c99f577ec44d40bc47bfcb09e86ef18f05bc61fc0a0a84d9b1aca"
+content-hash = "e914a43b272129c4e7dcdda24d71e8fcdc88d354849c83fd7c75ea63ced28dd2"
 
 [metadata.files]
 aiohttp = [
@@ -583,11 +583,11 @@ isort = [
     {file = "isort-5.10.1.tar.gz", hash = "sha256:e8443a5e7a020e9d7f97f1d7d9cd17c88bcb3bc7e218bf9cf5095fe550be2951"},
 ]
 jishaku = [
-    {file = "jishaku-2.4.0-py3-none-any.whl", hash = "sha256:d61e26d1b5380f76a0c92eb61869e6daff906f029be5c1a4fc76205ee1b2d767"},
-    {file = "jishaku-2.4.0-py3.10.egg", hash = "sha256:e60e593d81e84774f9fcb470e3ca8e7d2f0be543c2d774164340709ba09cc9a2"},
-    {file = "jishaku-2.4.0-py3.8.egg", hash = "sha256:ad647937093d694d2c61a54b1c34eb6d96a7533e694883e4cfd2398ad6c09f12"},
-    {file = "jishaku-2.4.0-py3.9.egg", hash = "sha256:d118c9a5cc557d2828ab2425d3ea6c8afcab99b099ab971e46afc5f0fdc02a16"},
-    {file = "jishaku-2.4.0.tar.gz", hash = "sha256:784d8d3896e62250fef2e504c53340e5a76ef5bc53a390b2aad1cbbb2e05b172"},
+    {file = "jishaku-2.5.0-py3-none-any.whl", hash = "sha256:8719cd8bdc75b404e89b8ef35144fa22bdd867ebd05fa54bace144c60612fba6"},
+    {file = "jishaku-2.5.0-py3.10.egg", hash = "sha256:b9a2bcb2234e1333c61c1a8e2eab97779243642ef7fc7715b61c138b85635032"},
+    {file = "jishaku-2.5.0-py3.8.egg", hash = "sha256:260a737e0ead895684a976251a551a8cc0ea0b75918344b6a6fd82faf8b45679"},
+    {file = "jishaku-2.5.0-py3.9.egg", hash = "sha256:efbe761861dd6394de7915e60bd24538ab7f1c7a3a4dad4be523206bb126decf"},
+    {file = "jishaku-2.5.0.tar.gz", hash = "sha256:0949a1bf6758feffe2b91279e4fb68ac46325bf6c00b42accd31fe017f74771b"},
 ]
 multidict = [
     {file = "multidict-6.0.2-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:0b9e95a740109c6047602f4db4da9949e6c5945cefbad34a1299775ddc9a62e2"},
