@@ -1,23 +1,21 @@
 from logging import NullHandler, getLogger
-from typing import NamedTuple, Literal
-
+from typing import Literal, NamedTuple
 
 from .botbase import BotBase, get_handler
+from .checks import *
 from .emojis import Emojis
 from .exceptions import Blacklisted
 from .wraps import (
     MyContext,
     MyInter,
+    Wrap,
     WrappedChannel,
     WrappedMember,
-    WrappedUser,
     WrappedThread,
-    Wrap,
+    WrappedUser,
 )
-from .checks import *
 
-
-__version__ = "1.14.6"
+__version__ = "1.14.7"
 
 
 getLogger(__name__).addHandler(NullHandler())
