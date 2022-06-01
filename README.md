@@ -1,9 +1,8 @@
-# I'm Sorry
+# botbase
 
-I wish you luck in trying to use this.
-Future me or anyone
+This is a botbase project for [nextcord](https://github.com/nextcord/nextcord) Discord Python bots to reduce boilerplate.
 
-## Oh yeah the config
+## Config values
 
 db_enabled: bool default True
 
