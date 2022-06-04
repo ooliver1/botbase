@@ -211,14 +211,12 @@ class BotBase(Bot):
         self.loop.create_task(self.startup())
 
         cog_dir = f"{self.mod}/cogs" if self.mod else "./cogs"
-        cogs_mod = f"{self.mod}.cogs" if self.mod else "cogs"
+        cogs = Path(cog_dir)
 
-        for filename in listdir(cog_dir):
-            if filename.endswith(".py"):
-                self.load_extension(f"{cogs_mod}.{filename[:-3]}")
-            else:
-                if isfile(filename):
-                    print(f"Unable to load {filename[:-3]}")
+        for filename in cogs.glob("**/*.py"):
+            if filename.suffix == ".py":
+                ext = cog_dir / filename.relative_to(cogs)
+                self.load_extension(str(ext).replace("/", "."))
 
         super().run(*args, **kwargs)
 
