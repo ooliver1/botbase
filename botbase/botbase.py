@@ -216,7 +216,7 @@ class BotBase(Bot):
         for filename in cogs.glob("**/*.py"):
             if filename.suffix == ".py":
                 ext = cog_dir / filename.relative_to(cogs)
-                self.load_extension(str(ext).replace("/", "."))
+                self.load_extension(str(ext).replace("/", ".").rstrip(".py"))
 
         super().run(*args, **kwargs)
 
