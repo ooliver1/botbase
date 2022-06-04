@@ -1,5 +1,4 @@
 from logging import NullHandler, getLogger
-from typing import Literal, NamedTuple
 
 from .botbase import BotBase, get_handler
 from .checks import *
@@ -14,8 +13,9 @@ from .wraps import (
     WrappedThread,
     WrappedUser,
 )
+from .models import CogBase
 
-__version__ = "1.15.0"
+__version__ = "1.16.0"
 
 
 getLogger(__name__).addHandler(NullHandler())

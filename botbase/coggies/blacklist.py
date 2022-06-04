@@ -4,17 +4,14 @@ from typing import TYPE_CHECKING
 
 from nextcord import Embed, Object
 from nextcord.ext.commands import Cog, group, is_owner
-
+from ..models import CogBase
 from ..wraps import MyContext
 
 if TYPE_CHECKING:
     from ..botbase import BotBase
 
 
-class BlacklistCog(Cog):
-    def __init__(self, bot: BotBase) -> None:
-        self.bot = bot
-
+class BlacklistCog(CogBase):
     @group(invoke_without_command=True, hidden=True)
     @is_owner()
     async def blacklist(self, ctx: MyContext) -> None:
