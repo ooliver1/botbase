@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ooliver-botbase"
-version = "1.16.0"
+version = "1.16.1"
 description = "A personal nextcord bot base package for bots."
 authors = ["ooliver1 <oliverwilkes2006@icloud.com>"]
 license = "MIT"
@@ -20,7 +20,7 @@ botbase = "botbase.cli:main"
 [tool.poetry.dependencies]
 python = "^3.8"
 asyncpg = ">=0.25.0<0.26.0"
-nextcord = ">=2.0.0-alpha.10<3.0.0"
+nextcord = ">=2.0.0-beta.2<3.0.0"
 nextcord-ext-menus = "^1.5.2"
 jishaku = "2.4.0"
 psutil = "^5.9.0"
