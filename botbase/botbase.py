@@ -213,9 +213,8 @@ class BotBase(Bot):
         cog_dir = f"{self.mod}/cogs" if self.mod else "./cogs"
         cogs = Path(cog_dir)
 
-        for filename in cogs.glob("**/*.py"):
-            if filename.suffix == ".py":
-                ext = cog_dir / filename.relative_to(cogs)
+        for ext in cogs.glob("**/*.py"):
+            if ext.suffix == ".py":
                 self.load_extension(str(ext).replace("/", ".").rstrip(".py"))
 
         super().run(*args, **kwargs)
