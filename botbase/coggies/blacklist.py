@@ -3,7 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from nextcord import Embed, Object
-from nextcord.ext.commands import Cog, group, is_owner
+from nextcord.ext.commands import group, is_owner
+
 from ..models import CogBase
 from ..wraps import MyContext
 
