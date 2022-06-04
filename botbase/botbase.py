@@ -204,7 +204,7 @@ class BotBase(Bot):
         if self.aiohttp_enabled:
             self.session = ClientSession()
 
-        if self.blacklist_enabled:
+        if self.blacklist_enabled and self.db_enabled:
             self.blacklist = Blacklist(self.db)
 
     def run(self, *args, **kwargs) -> None:
