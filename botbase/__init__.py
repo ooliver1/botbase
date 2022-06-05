@@ -15,7 +15,7 @@ from .wraps import (
 )
 from .models import CogBase
 
-__version__ = "1.16.4"
+__version__ = "1.17.0"
 
 
 getLogger(__name__).addHandler(NullHandler())
