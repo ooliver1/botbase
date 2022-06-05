@@ -215,6 +215,8 @@ class BotBase(Bot):
 
         for ext in cogs.glob("**/*.py"):
             log.info("Found file %s", ext)
+            if "extras" in ext.parts:
+                continue
             if ext.suffix == ".py":
                 a = str(ext).replace("/", ".").rstrip(".py")
                 log.info("Loading ext %s", a)
