@@ -218,7 +218,7 @@ class BotBase(Bot):
             if "extras" in ext.parts:
                 continue
             if ext.suffix == ".py":
-                a = str(ext).replace("/", ".").rstrip(".py")
+                a = str(ext).replace("/", ".")[:-3]
                 log.info("Loading ext %s", a)
                 try:
                     self.load_extension(a)
