@@ -108,7 +108,7 @@ class BotBase(Bot):
         h = get_handler()
 
         log.addHandler(h)
-        getLogger("asyncio").setLevel(CRITICAL)
+        getlog("asyncio").setLevel(CRITICAL)
 
         self.loop.set_exception_handler(self.asyncio_handler)
 
@@ -214,8 +214,16 @@ class BotBase(Bot):
         cogs = Path(cog_dir)
 
         for ext in cogs.glob("**/*.py"):
+            log.info("Found file %s", ext)
             if ext.suffix == ".py":
-                self.load_extension(str(ext).replace("/", ".").rstrip(".py"))
+                a = str(ext).replace("/", ".").rstrip(".py")
+                log.info("Loading ext %s", a)
+                try:
+                    self.load_extension(a)
+                except Exception as e:
+                    log.info("Failed to load %s", a, exc_info=True)
+                else:
+                    log.info("Loaded ext %s", a)
 
         super().run(*args, **kwargs)
 
