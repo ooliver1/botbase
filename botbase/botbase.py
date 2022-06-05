@@ -108,7 +108,7 @@ class BotBase(Bot):
         h = get_handler()
 
         log.addHandler(h)
-        getlog("asyncio").setLevel(CRITICAL)
+        getLogger("asyncio").setLevel(CRITICAL)
 
         self.loop.set_exception_handler(self.asyncio_handler)
 
