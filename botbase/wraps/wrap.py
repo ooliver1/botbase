@@ -86,8 +86,6 @@ class Wrap:
         target = target or (
             self.message  # ctx, reply=True
             if reply and isinstance(self, MyContext)
-            else self.channel  # ctx, reply=False
-            if isinstance(self, MyContext)
             else self  # Anything else (member.send)
         )
 
