@@ -140,7 +140,7 @@ class Wrap:
             if isinstance(target.channel, channels):
                 return await target.channel.send(embed=embed, **kwargs)
             else:
-                return await target.send(embed=embed, **kwargs)
+                return await target.send(embed=embed, **kwargs)  # type: ignore
         elif isinstance(
             target,
             (
@@ -149,8 +149,9 @@ class Wrap:
                 WrappedChannel,
                 WrappedThread,
                 MyInter,
+                MyContext,
             ),
         ):
-            return await target.send(embed=embed, **kwargs)
+            return await target.send(embed=embed, **kwargs)  # type: ignore
         else:
             raise TypeError(f"{type(self).__name__} cannot send embeds")
