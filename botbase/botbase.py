@@ -3,8 +3,6 @@ from __future__ import annotations
 from importlib import import_module
 from logging import CRITICAL, INFO, Formatter, getLogger
 from logging.handlers import RotatingFileHandler
-from os import listdir
-from os.path import isfile
 from pathlib import Path
 from random import choice
 from sys import modules
@@ -88,7 +86,15 @@ class BotBase(Bot):
             return config_module, ""
 
     def __init__(self, *args, config_module: str = "config", **kwargs) -> None:
-        pre = kwargs.pop("command_prefix", self.get_pre)
+        cfg, mod = self.get_config(config_module.rstrip(".py"))
+        config = import_module(cfg)
+
+        if not getattr(config, "prefix"):
+            default_getter = tuple()
+        else:
+            default_getter = self.get_pre
+
+        pre = kwargs.pop("command_prefix", default_getter)
         saf = kwargs.pop("strip_after_prefix", True)
         ca = kwargs.pop("case_insensitive", True)
 
@@ -111,9 +117,6 @@ class BotBase(Bot):
         getLogger("asyncio").setLevel(CRITICAL)
 
         self.loop.set_exception_handler(self.asyncio_handler)
-
-        cfg, mod = self.get_config(config_module.rstrip(".py"))
-        config = import_module(cfg)
 
         self.mod = mod
 
@@ -398,6 +401,44 @@ class BotBase(Bot):
                     """UPDATE commands SET amount = commands.amount + 1 
                     WHERE member=$1 AND channel IS NULL and guild IS NULL""",
                     ctx.author.id,
+                )
+
+    async def on_application_command_completion(self, inter: MyInter):
+        if not self.db_enabled:
+            return
+
+        if inter.guild is not None:
+            await self.db.execute(
+                """INSERT INTO commands (command, guild, channel, member, amount) 
+                VALUES ($1,$2,$3,$4,$5) 
+                ON CONFLICT (command, guild, channel, member) DO UPDATE
+                    SET amount = commands.amount + 1""",
+                inter.command,
+                inter.guild.id,
+                inter.channel.id,
+                inter.author.id,
+                1,
+            )
+        else:
+            a = await self.db.fetchval(
+                "SELECT * FROM commands WHERE member=$1 AND channel IS NULL and guild IS NULL",
+                inter.author.id,
+            )
+            if a is None:
+                await self.db.execute(
+                    """INSERT INTO commands (command, guild, channel, member, amount) 
+                    VALUES ($1,$2,$3,$4,$5)""",
+                    inter.command,
+                    None,
+                    None,
+                    inter.author.id,
+                    1,
+                )
+            else:
+                await self.db.execute(
+                    """UPDATE commands SET amount = commands.amount + 1 
+                    WHERE member=$1 AND channel IS NULL and guild IS NULL""",
+                    inter.author.id,
                 )
 
     async def on_guild_join(self, guild: Guild):
