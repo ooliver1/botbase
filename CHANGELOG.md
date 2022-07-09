@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.19.1](https://github.com/ooliver1/botbase/compare/v1.19.0...v1.19.1) (2022-07-09)
+
+
+### Bug Fixes
+
+* actually allow empty prefix ([09fb8e1](https://github.com/ooliver1/botbase/commit/09fb8e1110f8a485be16e231197ad452b02eeef8))
+
 ## [1.19.0](https://github.com/ooliver1/botbase/compare/v1.18.0...v1.19.0) (2022-07-09)
 
 
