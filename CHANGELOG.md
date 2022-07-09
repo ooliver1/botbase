@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.19.2](https://github.com/ooliver1/botbase/compare/v1.19.1...v1.19.2) (2022-07-09)
+
+
+### Bug Fixes
+
+* seriously use database initialiser ([06aa34f](https://github.com/ooliver1/botbase/commit/06aa34fd1dbc3d63e005cc219130957ed8be43a6))
+
 ## [1.19.1](https://github.com/ooliver1/botbase/compare/v1.19.0...v1.19.1) (2022-07-09)
 
 
