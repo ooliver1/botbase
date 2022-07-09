@@ -179,7 +179,7 @@ class BotBase(AutoShardedBot):
         self.aiohttp_enabled: bool = getattr(config, "aiohttp_enabled", True)
         self.colors: list[int] = getattr(config, "colors", [0x9966CC])
         self.blacklist_enabled: bool = getattr(config, "blacklist_enabled", True)
-        self.default_pre: list[str] = getattr(config, "prefix")
+        self.default_pre: list[str] = getattr(config, "prefix", [])
         self.helpmsg: str = getattr(config, "helpmsg", defaulthelpmsg)
         self.helpindex: str = getattr(config, "helpindex", defaulthelpindex)
         self.helpfields: dict[str, str] = getattr(config, "helpfields", {})
