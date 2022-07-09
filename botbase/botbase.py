@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS guilds (
     id BIGINT PRIMARY KEY,
     prefix VARCHAR
 );
-CREATE TABLE commands (
+CREATE TABLE IF NOT EXISTS commands (
     command VARCHAR NOT NULL,
     guild BIGINT,
     channel BIGINT,
@@ -61,11 +61,11 @@ CREATE TABLE commands (
     amount INT,
     UNIQUE(command, guild, channel, member)
 );
-CREATE TABLE blacklist_guilds (
+CREATE TABLE IF NOT EXISTS blacklist_guilds (
     id BIGINT PRIMARY KEY,
     reason VARCHAR
 );
-CREATE TABLE blacklist_users (
+CREATE TABLE IF NOT EXISTS blacklist_users (
     id BIGINT PRIMARY KEY,
     reason VARCHAR
 );
@@ -234,6 +234,7 @@ class BotBase(AutoShardedBot):
             db = await create_pool(*self.db_args, **self.db_kwargs)
             assert db is not None
             self.db = db
+            await self.db.execute(self.database_init)
 
         if self.aiohttp_enabled:
             self.session = ClientSession()
