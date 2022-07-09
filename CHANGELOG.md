@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.19.0](https://github.com/ooliver1/botbase/compare/v1.18.0...v1.19.0) (2022-07-09)
+
+
+### Features
+
+* add database initial statement ([5cee930](https://github.com/ooliver1/botbase/commit/5cee930c1b96fa15b4fa15ab4fb149b2be8d6bac))
+* use sharded bot ([467505b](https://github.com/ooliver1/botbase/commit/467505b3b036a38d0033a505abb1a0f2250cf073))
+
+
+### Bug Fixes
+
+* actually allow empty prefix ([97c26ed](https://github.com/ooliver1/botbase/commit/97c26edfed2c24d0cc40832e90fd0e9a5adaa7e2))
+
 ## [1.18.0](https://github.com/ooliver1/botbase/compare/v1.17.7...v1.18.0) (2022-07-09)
 
 
