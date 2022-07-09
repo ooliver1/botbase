@@ -113,7 +113,7 @@ class BotBase(AutoShardedBot):
         cfg, mod = self.get_config(config_module.rstrip(".py"))
         config = import_module(cfg)
 
-        if not getattr(config, "prefix"):
+        if not getattr(config, "prefix", None):
             default_getter = when_mentioned
             kwargs["help_command"] = None
             set_help = False
