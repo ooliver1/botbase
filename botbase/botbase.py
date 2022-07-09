@@ -48,6 +48,30 @@ I have been up since {created_at} and I serve for you!
 """
 
 
+initialise = """
+CREATE TABLE IF NOT EXISTS guilds (
+    id BIGINT PRIMARY KEY,
+    prefix VARCHAR
+);
+CREATE TABLE commands (
+    command VARCHAR NOT NULL,
+    guild BIGINT,
+    channel BIGINT,
+    member BIGINT NOT NULL,
+    amount INT,
+    UNIQUE(command, guild, channel, member)
+);
+CREATE TABLE blacklist_guilds (
+    id BIGINT PRIMARY KEY,
+    reason VARCHAR
+);
+CREATE TABLE blacklist_users (
+    id BIGINT PRIMARY KEY,
+    reason VARCHAR
+);
+"""
+
+
 def get_handler():
     h = RotatingFileHandler(
         "./logs/bot/io.log",
@@ -164,6 +188,7 @@ class BotBase(AutoShardedBot):
         self.emojiset: Any = getattr(config, "emojiset", Emojis())
         self.logchannel: int | None = getattr(config, "logchannel", None)
         self.guild_ids: list[int] | None = getattr(config, "guild_ids", None)
+        self.database_init: str = initialise + getattr(config, "database_init", "")
 
         self._single_events: dict[str, Callable] = {
             "on_message": self.get_wrapped_message,
