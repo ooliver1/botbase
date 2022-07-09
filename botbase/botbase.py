@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING
 from aiohttp import ClientSession
 from asyncpg import create_pool
 from nextcord import Embed, Interaction, Member, Thread, User, abc
-from nextcord.ext.commands import Bot, when_mentioned_or
+from nextcord.ext.commands import Bot, when_mentioned, when_mentioned_or
 
 from .blacklist import Blacklist
 from .emojis import Emojis
@@ -29,7 +29,7 @@ if TYPE_CHECKING:
     from typing import Any, Callable, Optional, Union
 
     from asyncpg import Pool
-    from nextcord import Guild, Message
+    from nextcord import Guild, Message, PartialMessageable
 
 
 log = getLogger(__name__)
@@ -90,9 +90,12 @@ class BotBase(Bot):
         config = import_module(cfg)
 
         if not getattr(config, "prefix"):
-            default_getter = tuple()
+            default_getter = when_mentioned
+            kwargs["help_command"] = None
+            set_help = False
         else:
             default_getter = self.get_pre
+            set_help = True
 
         pre = kwargs.pop("command_prefix", default_getter)
         saf = kwargs.pop("strip_after_prefix", True)
@@ -138,6 +141,7 @@ class BotBase(Bot):
             self.db_kwargs = {
                 "database": db_name,
                 "user": db_user,
+                "host": db_host,
             }
         else:
             self.db_enabled = False
@@ -173,7 +177,9 @@ class BotBase(Bot):
         }
 
         self.load_extension("jishaku")
-        self.load_extension("botbase.coggies.help")
+
+        if set_help:
+            self.load_extension("botbase.coggies.help")
 
         if self.blacklist_enabled:
             self.load_extension("botbase.coggies.blacklist")
@@ -320,7 +326,9 @@ class BotBase(Bot):
 
     def get_wrapped_channel(
         self,
-        channel: Union[abc.GuildChannel, abc.PrivateChannel, Thread],
+        channel: Union[
+            abc.GuildChannel, abc.PrivateChannel, Thread, PartialMessageable
+        ],
     ) -> Union[WrappedThread, WrappedChannel]:
         if isinstance(channel, Thread):
             return WrappedThread(channel, self)
@@ -415,7 +423,7 @@ class BotBase(Bot):
                     SET amount = commands.amount + 1""",
                 inter.command,
                 inter.guild.id,
-                inter.channel.id,
+                inter.channel.id,  # type: ignore
                 inter.author.id,
                 1,
             )
