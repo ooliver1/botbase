@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING
 from aiohttp import ClientSession
 from asyncpg import create_pool
 from nextcord import Embed, Interaction, Member, Thread, User, abc
-from nextcord.ext.commands import Bot, when_mentioned, when_mentioned_or
+from nextcord.ext.commands import AutoShardedBot, when_mentioned, when_mentioned_or
 
 from .blacklist import Blacklist
 from .emojis import Emojis
@@ -65,7 +65,7 @@ def get_handler():
     return h
 
 
-class BotBase(Bot):
+class BotBase(AutoShardedBot):
     db: Pool
     session: ClientSession
     blacklist: Optional[Blacklist]
@@ -179,10 +179,10 @@ class BotBase(Bot):
         self.load_extension("jishaku")
 
         if set_help:
-            self.load_extension("botbase.coggies.help")
+            self.load_extension("botbase.cogs.help")
 
         if self.blacklist_enabled:
-            self.load_extension("botbase.coggies.blacklist")
+            self.load_extension("botbase.cogs.blacklist")
             self.blacklist = None
 
     @property
