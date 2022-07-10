@@ -250,7 +250,7 @@ class BotBase(AutoShardedBot):
 
         for ext in cogs.glob("**/*.py"):
             log.info("Found file %s", ext)
-            if "extras" in ext.parts:
+            if "extras" in ext.parts or any(part.startswith("_") for part in ext.parts):
                 continue
             if ext.suffix == ".py":
                 a = str(ext).replace("/", ".")[:-3]
