@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.0](https://github.com/ooliver1/botbase/compare/v1.19.2...v1.20.0) (2022-07-10)
+
+
+### Features
+
+* skip cog files with an underscore ([73739d7](https://github.com/ooliver1/botbase/commit/73739d73eaf0c98218505df38c3a874479b7f166))
+
 ## [1.19.2](https://github.com/ooliver1/botbase/compare/v1.19.1...v1.19.2) (2022-07-09)
 
 
