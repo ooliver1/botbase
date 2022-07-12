@@ -13,7 +13,7 @@ This is a bot base project for Discord python bots made with [nextcord](https://
 | `db_host`           | `str`              | `"localhost"`                                    |
 | `version`           | `str`              | `"0.0.0"`                                        |
 | `aiohttp_enabled`   | `bool`             | `True`                                           |
-| `colours`           | `list[int]`        | `[0x9966CC]`                                     |
+| `colors`           | `list[int]`        | `[0x9966CC]`                                     |
 | `blacklist_enabled` | `bool`             | `True`                                           |
 | `prefix`            | `str \| list[str]` | `None`                                           |
 | `helpmsg`           | `str`              | [`defaulthelpmsg`](botbase/botbase.py#L38-L47)   |
