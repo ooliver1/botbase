@@ -255,12 +255,8 @@ class BotBase(AutoShardedBot):
             if ext.suffix == ".py":
                 a = str(ext).replace("/", ".")[:-3]
                 log.info("Loading ext %s", a)
-                try:
-                    self.load_extension(a)
-                except Exception as e:
-                    log.info("Failed to load %s", a, exc_info=True)
-                else:
-                    log.info("Loaded ext %s", a)
+                self.load_extension(a)
+                log.info("Loaded ext %s", a)
 
         super().run(*args, **kwargs)
 
