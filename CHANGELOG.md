@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.1](https://github.com/ooliver1/botbase/compare/v1.20.0...v1.20.1) (2022-07-17)
+
+
+### Bug Fixes
+
+* **botbase:** dont ignore errors like that ([d116b04](https://github.com/ooliver1/botbase/commit/d116b0450f6eafd992c0b5fad9c09da07285c26e))
+
 ## [1.20.0](https://github.com/ooliver1/botbase/compare/v1.19.2...v1.20.0) (2022-07-10)
 
 
