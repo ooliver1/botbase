@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.2](https://github.com/ooliver1/botbase/compare/v1.20.1...v1.20.2) (2022-07-26)
+
+
+### Bug Fixes
+
+* add py.typed ([571e090](https://github.com/ooliver1/botbase/commit/571e090147c82b4a85b5233caa5d7739bfc15cd1))
+
 ## [1.20.1](https://github.com/ooliver1/botbase/compare/v1.20.0...v1.20.1) (2022-07-17)
 
 
