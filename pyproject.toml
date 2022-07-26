@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ooliver-botbase"
-version = "1.20.1"
+version = "1.20.2"
 description = "A personal nextcord bot base package for bots."
 authors = ["ooliver1 <oliverwilkes2006@icloud.com>"]
 license = "MIT"
