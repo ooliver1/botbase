@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.4](https://github.com/ooliver1/botbase/compare/v1.20.3...v1.20.4) (2022-07-27)
+
+
+### Bug Fixes
+
+* export members properly ([d39453d](https://github.com/ooliver1/botbase/commit/d39453dd6ba92e343f19d3d55638d85c12c9049d))
+
 ## [1.20.3](https://github.com/ooliver1/botbase/compare/v1.20.2...v1.20.3) (2022-07-27)
 
 
