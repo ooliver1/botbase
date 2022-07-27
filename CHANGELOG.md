@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.3](https://github.com/ooliver1/botbase/compare/v1.20.2...v1.20.3) (2022-07-27)
+
+
+### Bug Fixes
+
+* **wraps:** make bot generic on Context ([0a35940](https://github.com/ooliver1/botbase/commit/0a3594026edffc775e553630600ec5ad4c052721))
+
 ## [1.20.2](https://github.com/ooliver1/botbase/compare/v1.20.1...v1.20.2) (2022-07-26)
 
 
