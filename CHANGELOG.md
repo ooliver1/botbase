@@ -1,5 +1,47 @@
 # Changelog
 
+## [1.20.6](https://github.com/ooliver1/botbase/compare/v1.20.5...v1.20.6) (2022-08-02)
+
+
+### Bug Fixes
+
+* aaa ([092f131](https://github.com/ooliver1/botbase/commit/092f1315f21636f800d1a46bd0526c1c48fdd83c))
+
+## [1.20.5](https://github.com/ooliver1/botbase/compare/v1.20.4...v1.20.5) (2022-08-02)
+
+
+### Bug Fixes
+
+* **wraps:** don't use strings for typecast ([337e1f9](https://github.com/ooliver1/botbase/commit/337e1f922fef7aa48a8d6a48bca99e9ff38882e7))
+
+## [1.20.4](https://github.com/ooliver1/botbase/compare/v1.20.3...v1.20.4) (2022-07-27)
+
+
+### Bug Fixes
+
+* export members properly ([d39453d](https://github.com/ooliver1/botbase/commit/d39453dd6ba92e343f19d3d55638d85c12c9049d))
+
+## [1.20.3](https://github.com/ooliver1/botbase/compare/v1.20.2...v1.20.3) (2022-07-27)
+
+
+### Bug Fixes
+
+* **wraps:** make bot generic on Context ([0a35940](https://github.com/ooliver1/botbase/commit/0a3594026edffc775e553630600ec5ad4c052721))
+
+## [1.20.2](https://github.com/ooliver1/botbase/compare/v1.20.1...v1.20.2) (2022-07-26)
+
+
+### Bug Fixes
+
+* add py.typed ([571e090](https://github.com/ooliver1/botbase/commit/571e090147c82b4a85b5233caa5d7739bfc15cd1))
+
+## [1.20.1](https://github.com/ooliver1/botbase/compare/v1.20.0...v1.20.1) (2022-07-17)
+
+
+### Bug Fixes
+
+* **botbase:** dont ignore errors like that ([d116b04](https://github.com/ooliver1/botbase/commit/d116b0450f6eafd992c0b5fad9c09da07285c26e))
+
 ## [1.20.0](https://github.com/ooliver1/botbase/compare/v1.19.2...v1.20.0) (2022-07-10)
 
 
