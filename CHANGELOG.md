@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.7](https://github.com/ooliver1/botbase/compare/v1.20.6...v1.20.7) (2022-08-02)
+
+
+### Bug Fixes
+
+* default host to unix instead of host ([9201259](https://github.com/ooliver1/botbase/commit/9201259e7eaa3a44450aef2fb3984d93e7d78c2e))
+
 ## [1.20.6](https://github.com/ooliver1/botbase/compare/v1.20.5...v1.20.6) (2022-08-02)
 
 
