@@ -10,7 +10,7 @@ from . import wrap
 if TYPE_CHECKING:
     from ..botbase import BotBase
 
-B = TypeVar("B", bound=BotBase)
+B = TypeVar("B", bound="BotBase")
 
 
 class MyContext(Context, wrap.Wrap, Generic[B]):
