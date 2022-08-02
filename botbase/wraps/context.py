@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Generic
+from typing import TYPE_CHECKING, Generic, TypeVar
 
 from nextcord.ext.commands import Context
 
@@ -9,12 +9,11 @@ from . import wrap
 
 if TYPE_CHECKING:
     from ..botbase import BotBase
-    from typing import TypeVar
 
-    B = TypeVar("B", bound=BotBase)
+B = TypeVar("B", bound=BotBase)
 
 
-class MyContext(Context, wrap.Wrap, Generic["B"]):
+class MyContext(Context, wrap.Wrap, Generic[B]):
     bot: B
 
     def __init__(self, *args, **kwargs):
