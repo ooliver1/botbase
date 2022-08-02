@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.8](https://github.com/ooliver1/botbase/compare/v1.20.7...v1.20.8) (2022-08-02)
+
+
+### Bug Fixes
+
+* use desc not description pt.2 ([1401519](https://github.com/ooliver1/botbase/commit/1401519b3c38567383b639b0399c4489844ba1aa))
+
 ## [1.20.7](https://github.com/ooliver1/botbase/compare/v1.20.6...v1.20.7) (2022-08-02)
 
 

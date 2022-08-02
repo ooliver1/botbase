@@ -7,7 +7,7 @@ from .exceptions import *
 from .wraps import *
 from .models import *
 
-__version__ = "1.20.7"  # x-release-please-version
+__version__ = "1.20.8"  # x-release-please-version
 
 
 getLogger(__name__).addHandler(NullHandler())
