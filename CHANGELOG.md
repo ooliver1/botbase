@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.5](https://github.com/ooliver1/botbase/compare/v1.20.4...v1.20.5) (2022-08-02)
+
+
+### Bug Fixes
+
+* **wraps:** don't use strings for typecast ([337e1f9](https://github.com/ooliver1/botbase/commit/337e1f922fef7aa48a8d6a48bca99e9ff38882e7))
+
 ## [1.20.4](https://github.com/ooliver1/botbase/compare/v1.20.3...v1.20.4) (2022-07-27)
 
 
