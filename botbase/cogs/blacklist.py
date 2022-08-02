@@ -28,14 +28,16 @@ class BlacklistCog(CogBase):
     async def add_person(self, ctx: MyContext, user: Object, *, reason=None) -> None:
         assert self.bot.blacklist is not None
         await self.bot.blacklist.add(user.id, reason=reason, guild=False)
-        await ctx.send_embed(description=f"I have added <@{user.id}> to the blacklist.")
+        await ctx.send_embed(desc=f"I have added <@{user.id}> to the blacklist.")
 
     @add.command(name="guild", aliases=["server"])
     @is_owner()
     async def add_guild(self, ctx: MyContext, guild: Object, *, reason=None) -> None:
         assert self.bot.blacklist is not None
         await self.bot.blacklist.add(guild.id, reason=reason, guild=True)
-        await ctx.send_embed(description=f"I have added the guild `{guild.id}` to the blacklist")
+        await ctx.send_embed(
+            desc=f"I have added the guild `{guild.id}` to the blacklist"
+        )
 
     @blacklist.command()
     @is_owner()
@@ -68,14 +70,14 @@ class BlacklistCog(CogBase):
     async def remove_person(self, ctx: MyContext, user: Object) -> None:
         assert self.bot.blacklist is not None
         await self.bot.blacklist.remove(user.id, guild=False)
-        await ctx.send_embed("I have completed that action for you.")
+        await ctx.send_embed(desc="I have completed that action for you.")
 
     @remove.command(name="guild", aliases=["server"])
     @is_owner()
     async def remove_guild(self, ctx: MyContext, guild: Object) -> None:
         assert self.bot.blacklist is not None
         await self.bot.blacklist.remove(guild.id, guild=True)
-        await ctx.send_embed("I have completed that action for you.")
+        await ctx.send_embed(desc="I have completed that action for you.")
 
 
 def setup(bot: BotBase):
