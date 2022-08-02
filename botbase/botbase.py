@@ -158,14 +158,13 @@ class BotBase(AutoShardedBot):
         elif (
             (db_name := getattr(config, "db_name", None))
             and (db_user := getattr(config, "db_user", "ooliver"))
-            and (db_host := getattr(config, "db_host", "localhost"))
         ):
             self.db_enabled = True
             self.db_args = ()
             self.db_kwargs = {
                 "database": db_name,
                 "user": db_user,
-                "host": db_host,
+                "host": getattr(config, "db_host", None),
             }
         else:
             self.db_enabled = False
