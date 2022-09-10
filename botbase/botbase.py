@@ -13,7 +13,12 @@ from typing import TYPE_CHECKING
 from aiohttp import ClientSession
 from asyncpg import create_pool
 from nextcord import Embed, Interaction, Member, Thread, User, abc
-from nextcord.ext.commands import AutoShardedBot, when_mentioned, when_mentioned_or
+from nextcord.ext.commands import (
+    AutoShardedBot,
+    ExtensionNotFound,
+    when_mentioned,
+    when_mentioned_or,
+)
 
 from .blacklist import Blacklist
 from .emojis import Emojis
@@ -533,19 +538,31 @@ class BotBase(AutoShardedBot):
 
     def load_extension(self, name: str, *, extras: Optional[dict[str, Any]] = None) -> None:
         ext = f"{self.name}.cogs.{name}" if self.name else name
-        super().load_extension(ext, extras=extras)
+
+        try:
+            super().load_extension(ext, extras=extras)
+        except ExtensionNotFound:
+            super().load_extension(name, extras=extras)
 
         self.loop.create_task(self.sync_all_application_commands())
 
     def reload_extension(self, name: str) -> None:
         ext = f"{self.name}.cogs.{name}" if self.name else name
-        super().reload_extension(ext)
+
+        try:
+            super().reload_extension(ext)
+        except ExtensionNotFound:
+            super().reload_extension(name)
 
         self.loop.create_task(self.sync_all_application_commands())
 
     def unload_extension(self, name: str) -> None:
         ext = f"{self.name}.cogs.{name}" if self.name else name
-        super().unload_extension(ext)
+
+        try:
+            super().unload_extension(ext)
+        except ExtensionNotFound:
+            super().unload_extension(name)
 
         self.loop.create_task(self.sync_all_application_commands())
 
@@ -554,4 +571,4 @@ class BotBase(AutoShardedBot):
         if not self.name:
             return super().extensions
 
-        return {k.removeprefix(f"{self.name}.cogs."): v for k, v in super().extensions.items()}
+        return {k.removeprefix(f"{self.name}.cogs."): v for k, v in super().extensions.items()} | super().extensions
