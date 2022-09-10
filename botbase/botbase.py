@@ -7,6 +7,7 @@ from pathlib import Path
 from random import choice
 from sys import modules
 from textwrap import dedent
+from types import ModuleType
 from typing import TYPE_CHECKING
 
 from aiohttp import ClientSession
@@ -26,7 +27,7 @@ from .wraps import (
 )
 
 if TYPE_CHECKING:
-    from typing import Any, Callable, Optional, Union
+    from typing import Any, Callable, Mapping, Optional, Union
 
     from asyncpg import Pool
     from nextcord import Guild, Message, PartialMessageable
@@ -188,6 +189,7 @@ class BotBase(AutoShardedBot):
         self.logchannel: int | None = getattr(config, "logchannel", None)
         self.guild_ids: list[int] | None = getattr(config, "guild_ids", None)
         self.database_init: str = initialise + getattr(config, "database_init", "")
+        self.name: Optional[str] = getattr(config, "name", None)
 
         self._single_events: dict[str, Callable] = {
             "on_message": self.get_wrapped_message,
@@ -528,3 +530,28 @@ class BotBase(AutoShardedBot):
             await self.get_channel(self.logchannel).send(embed=embed)  # type: ignore
         except AttributeError:
             pass
+
+    def load_extension(self, name: str, *, extras: Optional[dict[str, Any]] = None) -> None:
+        ext = f"{self.name}.cogs.{name}" if self.name else name
+        super().load_extension(ext, extras=extras)
+
+        self.loop.create_task(self.sync_all_application_commands())
+
+    def reload_extension(self, name: str) -> None:
+        ext = f"{self.name}.cogs.{name}" if self.name else name
+        super().reload_extension(ext)
+
+        self.loop.create_task(self.sync_all_application_commands())
+
+    def unload_extension(self, name: str) -> None:
+        ext = f"{self.name}.cogs.{name}" if self.name else name
+        super().unload_extension(ext)
+
+        self.loop.create_task(self.sync_all_application_commands())
+
+    @property
+    def extensions(self) -> Mapping[str, ModuleType]:
+        if not self.name:
+            return super().extensions
+
+        return {k.removeprefix(f"{self.name}.cogs."): v for k, v in super().extensions.items()}

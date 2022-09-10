@@ -24,3 +24,4 @@ This is a bot base project for Discord python bots made with [nextcord](https://
 | `emojiset`          | `Emojis[str, str]` | `Emojis[]`                                       |
 | `logchannel`        | `int`              | `None`                                           |
 | `guild_ids`         | `list[int]`        | `None`                                           |
+| `name`              | `str`              | `None`                                           |
