@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.1](https://github.com/ooliver1/botbase/compare/v1.21.0...v1.21.1) (2022-09-10)
+
+
+### Bug Fixes
+
+* dont import removed emptyembed sentinel ([959fcae](https://github.com/ooliver1/botbase/commit/959fcae2cb99c2cc180726a79f42d09737d9abde))
+
 ## [1.21.0](https://github.com/ooliver1/botbase/compare/v1.20.8...v1.21.0) (2022-09-10)
 
 
