@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.3](https://github.com/ooliver1/botbase/compare/v1.21.2...v1.21.3) (2022-09-10)
+
+
+### Bug Fixes
+
+* what ([fdf2390](https://github.com/ooliver1/botbase/commit/fdf2390c94b0cb158eec2fb3e6b71c4c9cb75cbb))
+
 ## [1.21.2](https://github.com/ooliver1/botbase/compare/v1.21.1...v1.21.2) (2022-09-10)
 
 
