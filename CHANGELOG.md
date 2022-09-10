@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.2](https://github.com/ooliver1/botbase/compare/v1.21.1...v1.21.2) (2022-09-10)
+
+
+### Bug Fixes
+
+* **botbase:** cogs are very painful ([1bb9ab9](https://github.com/ooliver1/botbase/commit/1bb9ab918d0d941a15ae85d892ab673e38110b46))
+
 ## [1.21.1](https://github.com/ooliver1/botbase/compare/v1.21.0...v1.21.1) (2022-09-10)
 
 
