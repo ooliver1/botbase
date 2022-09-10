@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.0](https://github.com/ooliver1/botbase/compare/v1.20.8...v1.21.0) (2022-09-10)
+
+
+### Features
+
+* **botbase:** add helpers for cogs ([78b2b91](https://github.com/ooliver1/botbase/commit/78b2b91bd3181f4d3ba8a57df262c2806482afcc))
+
 ## [1.20.8](https://github.com/ooliver1/botbase/compare/v1.20.7...v1.20.8) (2022-08-02)
 
 
