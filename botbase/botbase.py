@@ -541,7 +541,7 @@ class BotBase(AutoShardedBot):
 
         try:
             super().load_extension(ext, extras=extras)
-        except ExtensionNotFound:
+        except (ExtensionNotFound, ModuleNotFoundError):
             super().load_extension(name, extras=extras)
 
         self.loop.create_task(self.sync_all_application_commands())
@@ -551,7 +551,7 @@ class BotBase(AutoShardedBot):
 
         try:
             super().reload_extension(ext)
-        except ExtensionNotFound:
+        except (ExtensionNotFound, ModuleNotFoundError):
             super().reload_extension(name)
 
         self.loop.create_task(self.sync_all_application_commands())
@@ -561,7 +561,7 @@ class BotBase(AutoShardedBot):
 
         try:
             super().unload_extension(ext)
-        except ExtensionNotFound:
+        except (ExtensionNotFound, ModuleNotFoundError):
             super().unload_extension(name)
 
         self.loop.create_task(self.sync_all_application_commands())
