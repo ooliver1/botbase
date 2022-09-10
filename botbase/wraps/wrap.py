@@ -13,7 +13,6 @@ from nextcord import (
 )
 from nextcord.abc import Messageable
 from nextcord.utils import utcnow
-from nextcord.embeds import _EmptyEmbed
 
 if TYPE_CHECKING:
     from typing import Any
@@ -61,8 +60,8 @@ class Wrap:
 
     async def send_embed(
         self,
-        title: str | _EmptyEmbed = Embed.Empty,
-        desc: str | _EmptyEmbed = Embed.Empty,
+        title: str | None = None,
+        desc: str | None = None,
         *,
         author: str | None = None,
         image: str | None = None,
