@@ -161,9 +161,8 @@ class BotBase(AutoShardedBot):
             self.db_enabled = True
             self.db_args = (db_url,)
             self.db_kwargs = {}
-        elif (
-            (db_name := getattr(config, "db_name", None))
-            and (db_user := getattr(config, "db_user", "ooliver"))
+        elif (db_name := getattr(config, "db_name", None)) and (
+            db_user := getattr(config, "db_user", "ooliver")
         ):
             self.db_enabled = True
             self.db_args = ()
@@ -172,6 +171,8 @@ class BotBase(AutoShardedBot):
                 "user": db_user,
                 "host": getattr(config, "db_host", None),
             }
+            if port := getattr(config, "db_port", None):
+                self.db_kwargs["port"] = port
         else:
             self.db_enabled = False
             self.db_args = ()
@@ -536,7 +537,9 @@ class BotBase(AutoShardedBot):
         except AttributeError:
             pass
 
-    def load_extension(self, name: str, *, extras: Optional[dict[str, Any]] = None) -> None:
+    def load_extension(
+        self, name: str, *, extras: Optional[dict[str, Any]] = None
+    ) -> None:
         ext = f"{self.name}.cogs.{name}" if self.name else name
 
         try:
@@ -571,4 +574,7 @@ class BotBase(AutoShardedBot):
         if not self.name:
             return super().extensions
 
-        return {k.removeprefix(f"{self.name}.cogs."): v for k, v in super().extensions.items()} | super().extensions
+        return {
+            k.removeprefix(f"{self.name}.cogs."): v
+            for k, v in super().extensions.items()
+        } | super().extensions
