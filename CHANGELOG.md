@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.4](https://github.com/ooliver1/botbase/compare/v1.21.3...v1.21.4) (2022-09-11)
+
+
+### Bug Fixes
+
+* **botbase:** support db port ([41bedd1](https://github.com/ooliver1/botbase/commit/41bedd1d2a65ed113065139a6ed6126e7841ca16))
+
 ## [1.21.3](https://github.com/ooliver1/botbase/compare/v1.21.2...v1.21.3) (2022-09-10)
 
 
