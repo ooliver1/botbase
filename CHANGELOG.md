@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.5](https://github.com/ooliver1/botbase/compare/v1.21.4...v1.21.5) (2022-10-03)
+
+
+### Bug Fixes
+
+* **botbase:** actually fix close and startup ([ab8a243](https://github.com/ooliver1/botbase/commit/ab8a243c58333ae53ac6f0516191177c8bf10149))
+
 ## [1.21.4](https://github.com/ooliver1/botbase/compare/v1.21.3...v1.21.4) (2022-09-11)
 
 
