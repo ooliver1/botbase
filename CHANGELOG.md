@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.22.1](https://github.com/ooliver1/botbase/compare/v1.22.0...v1.22.1) (2022-10-03)
+
+
+### Bug Fixes
+
+* only sync if ready ([39a752a](https://github.com/ooliver1/botbase/commit/39a752a04d2c1d9991c228e9bb6fdcd8e7b82845))
+
 ## [1.22.0](https://github.com/ooliver1/botbase/compare/v1.21.7...v1.22.0) (2022-10-03)
 
 
