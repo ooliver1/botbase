@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.7](https://github.com/ooliver1/botbase/compare/v1.21.6...v1.21.7) (2022-10-03)
+
+
+### Bug Fixes
+
+* istg ([d34b34b](https://github.com/ooliver1/botbase/commit/d34b34bfef0427050d134d2f0f1d151ef930d15a))
+
 ## [1.21.6](https://github.com/ooliver1/botbase/compare/v1.21.5...v1.21.6) (2022-10-03)
 
 
