@@ -564,7 +564,8 @@ class BotBase(AutoShardedBot):
         except (ExtensionNotFound, ModuleNotFoundError):
             super().load_extension(name, extras=extras)
 
-        self.loop.create_task(self.sync_all_application_commands())
+        if self.is_ready():
+            self.loop.create_task(self.sync_all_application_commands())
 
     def reload_extension(self, name: str) -> None:
         ext = f"{self.name}.cogs.{name}" if self.name else name
@@ -574,7 +575,8 @@ class BotBase(AutoShardedBot):
         except (ExtensionNotFound, ModuleNotFoundError):
             super().reload_extension(name)
 
-        self.loop.create_task(self.sync_all_application_commands())
+        if self.is_ready():
+            self.loop.create_task(self.sync_all_application_commands())
 
     def unload_extension(self, name: str) -> None:
         ext = f"{self.name}.cogs.{name}" if self.name else name
