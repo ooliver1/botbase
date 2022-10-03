@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from asyncio import TimeoutError as AsyncTimeoutError
+from asyncio import sleep, wait_for
+from contextlib import suppress
 from importlib import import_module
 from logging import CRITICAL, INFO, Formatter, getLogger
 from logging.handlers import RotatingFileHandler
@@ -236,11 +239,18 @@ class BotBase(AutoShardedBot):
             )
         )
 
-    async def startup(self) -> None:
+    async def start(self, *args, **kwargs) -> None:
         if self.db_enabled:
-            db = await create_pool(*self.db_args, **self.db_kwargs)
-            assert db is not None
-            self.db = db
+            for tries in range(5):
+                try:
+                    db = await create_pool(*self.db_args, **self.db_kwargs)
+                    assert db is not None
+                    self.db = db
+                except AssertionError:
+                    await sleep(2.5 * tries + 1)
+                else:
+                    break
+
             await self.db.execute(self.database_init)
 
         if self.aiohttp_enabled:
@@ -249,9 +259,9 @@ class BotBase(AutoShardedBot):
         if self.blacklist_enabled and self.db_enabled:
             self.blacklist = Blacklist(self.db)
 
-    def run(self, *args, **kwargs) -> None:
-        self.loop.create_task(self.startup())
+        await super().start(*args, **kwargs)
 
+    def run(self, *args, **kwargs) -> None:
         cog_dir = f"{self.mod}/cogs" if self.mod else "./cogs"
         cogs = Path(cog_dir)
 
@@ -268,8 +278,12 @@ class BotBase(AutoShardedBot):
         super().run(*args, **kwargs)
 
     async def close(self, *args, **kwargs) -> None:
-        if self.aiohttp_enabled:
+        if self.aiohttp_enabled and hasattr(self, "session"):
             await self.session.close()
+
+        if self.db_enabled and hasattr(self, "db"):
+            with suppress(AsyncTimeoutError):
+                await wait_for(self.db.close(), timeout=5)
 
         await super().close(*args, **kwargs)
 
