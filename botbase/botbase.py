@@ -4,7 +4,7 @@ from asyncio import TimeoutError as AsyncTimeoutError
 from asyncio import sleep, wait_for
 from contextlib import suppress
 from importlib import import_module
-from logging import CRITICAL, INFO, Formatter, getLogger
+from logging import CRITICAL, INFO, Formatter, getLogger, StreamHandler
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from random import choice
@@ -81,21 +81,23 @@ CREATE TABLE IF NOT EXISTS blacklist_users (
 """
 
 
-def get_handler():
+def get_handlers():
+    formatter = Formatter(
+        "%(levelname)-7s %(asctime)s %(filename)12s:%(funcName)-28s: %(message)s",
+        datefmt="%H:%M:%S %d/%m/%Y",
+    )
     h = RotatingFileHandler(
         "./logs/bot/io.log",
         maxBytes=1000000,
         backupCount=5,
         encoding="utf-8",
     )
-    h.setFormatter(
-        Formatter(
-            "%(levelname)-7s %(asctime)s %(filename)12s:%(funcName)-28s: %(message)s",
-            datefmt="%H:%M:%S %d/%m/%Y",
-        )
-    )
+    i = StreamHandler()
+
+    i.setFormatter(formatter)
+    h.setFormatter(formatter)
     h.namer = lambda name: name.replace(".log", "") + ".log"
-    return h
+    return h, i
 
 
 class BotBase(AutoShardedBot):
@@ -147,9 +149,10 @@ class BotBase(AutoShardedBot):
         log = getLogger()
         log.handlers = []
         log.setLevel(INFO)
-        h = get_handler()
+        h, i = get_handlers()
 
         log.addHandler(h)
+        log.addHandler(i)
         getLogger("asyncio").setLevel(CRITICAL)
 
         self.loop.set_exception_handler(self.asyncio_handler)
