@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.22.0](https://github.com/ooliver1/botbase/compare/v1.21.7...v1.22.0) (2022-10-03)
+
+
+### Features
+
+* add console handlers ([2aff21b](https://github.com/ooliver1/botbase/commit/2aff21b4ef20c4114ee02ba61d15a712c8bcd62f))
+
 ## [1.21.7](https://github.com/ooliver1/botbase/compare/v1.21.6...v1.21.7) (2022-10-03)
 
 
