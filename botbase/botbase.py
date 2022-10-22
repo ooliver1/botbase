@@ -273,7 +273,7 @@ class BotBase(AutoShardedBot):
             if "extras" in ext.parts or any(part.startswith("_") for part in ext.parts):
                 continue
             if ext.suffix == ".py":
-                a = str(ext).replace("/", ".")[:-3]
+                a = ".".join(ext.parts).removesuffix(".py")
                 log.info("Loading ext %s", a)
                 self.load_extension(a)
                 log.info("Loaded ext %s", a)
