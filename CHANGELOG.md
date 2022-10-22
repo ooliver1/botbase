@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.22.2](https://github.com/ooliver1/botbase/compare/v1.22.1...v1.22.2) (2022-10-22)
+
+
+### Bug Fixes
+
+* **botbase:** use str.join because windows ([48554dd](https://github.com/ooliver1/botbase/commit/48554ddd31eefaf19799af546a70a9557b264693))
+
 ## [1.22.1](https://github.com/ooliver1/botbase/compare/v1.22.0...v1.22.1) (2022-10-03)
 
 
