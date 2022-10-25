@@ -111,7 +111,10 @@ class BotBase(AutoShardedBot):
 
     def __init__(self, *args, config_module: str = "config", **kwargs) -> None:
         cfg, mod = self.get_config(config_module.rstrip(".py"))
-        config = import_module(cfg)
+        try:
+            config = import_module(cfg)
+        except ImportError:
+            config = None
 
         if not getattr(config, "prefix", None):
             default_getter = when_mentioned
