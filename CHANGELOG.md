@@ -1,5 +1,89 @@
 # Changelog
 
+## [1.22.2](https://github.com/ooliver1/botbase/compare/v1.22.1...v1.22.2) (2022-10-22)
+
+
+### Bug Fixes
+
+* **botbase:** use str.join because windows ([48554dd](https://github.com/ooliver1/botbase/commit/48554ddd31eefaf19799af546a70a9557b264693))
+
+## [1.22.1](https://github.com/ooliver1/botbase/compare/v1.22.0...v1.22.1) (2022-10-03)
+
+
+### Bug Fixes
+
+* only sync if ready ([39a752a](https://github.com/ooliver1/botbase/commit/39a752a04d2c1d9991c228e9bb6fdcd8e7b82845))
+
+## [1.22.0](https://github.com/ooliver1/botbase/compare/v1.21.7...v1.22.0) (2022-10-03)
+
+
+### Features
+
+* add console handlers ([2aff21b](https://github.com/ooliver1/botbase/commit/2aff21b4ef20c4114ee02ba61d15a712c8bcd62f))
+
+## [1.21.7](https://github.com/ooliver1/botbase/compare/v1.21.6...v1.21.7) (2022-10-03)
+
+
+### Bug Fixes
+
+* istg ([d34b34b](https://github.com/ooliver1/botbase/commit/d34b34bfef0427050d134d2f0f1d151ef930d15a))
+
+## [1.21.6](https://github.com/ooliver1/botbase/compare/v1.21.5...v1.21.6) (2022-10-03)
+
+
+### Bug Fixes
+
+* oh ([9810669](https://github.com/ooliver1/botbase/commit/9810669d7a85fc015059c47539965146bd455563))
+
+## [1.21.5](https://github.com/ooliver1/botbase/compare/v1.21.4...v1.21.5) (2022-10-03)
+
+
+### Bug Fixes
+
+* **botbase:** actually fix close and startup ([ab8a243](https://github.com/ooliver1/botbase/commit/ab8a243c58333ae53ac6f0516191177c8bf10149))
+
+## [1.21.4](https://github.com/ooliver1/botbase/compare/v1.21.3...v1.21.4) (2022-09-11)
+
+
+### Bug Fixes
+
+* **botbase:** support db port ([41bedd1](https://github.com/ooliver1/botbase/commit/41bedd1d2a65ed113065139a6ed6126e7841ca16))
+
+## [1.21.3](https://github.com/ooliver1/botbase/compare/v1.21.2...v1.21.3) (2022-09-10)
+
+
+### Bug Fixes
+
+* what ([fdf2390](https://github.com/ooliver1/botbase/commit/fdf2390c94b0cb158eec2fb3e6b71c4c9cb75cbb))
+
+## [1.21.2](https://github.com/ooliver1/botbase/compare/v1.21.1...v1.21.2) (2022-09-10)
+
+
+### Bug Fixes
+
+* **botbase:** cogs are very painful ([1bb9ab9](https://github.com/ooliver1/botbase/commit/1bb9ab918d0d941a15ae85d892ab673e38110b46))
+
+## [1.21.1](https://github.com/ooliver1/botbase/compare/v1.21.0...v1.21.1) (2022-09-10)
+
+
+### Bug Fixes
+
+* dont import removed emptyembed sentinel ([959fcae](https://github.com/ooliver1/botbase/commit/959fcae2cb99c2cc180726a79f42d09737d9abde))
+
+## [1.21.0](https://github.com/ooliver1/botbase/compare/v1.20.8...v1.21.0) (2022-09-10)
+
+
+### Features
+
+* **botbase:** add helpers for cogs ([78b2b91](https://github.com/ooliver1/botbase/commit/78b2b91bd3181f4d3ba8a57df262c2806482afcc))
+
+## [1.20.8](https://github.com/ooliver1/botbase/compare/v1.20.7...v1.20.8) (2022-08-02)
+
+
+### Bug Fixes
+
+* use desc not description pt.2 ([1401519](https://github.com/ooliver1/botbase/commit/1401519b3c38567383b639b0399c4489844ba1aa))
+
 ## [1.20.7](https://github.com/ooliver1/botbase/compare/v1.20.6...v1.20.7) (2022-08-02)
 
 

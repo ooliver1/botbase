@@ -1,18 +1,27 @@
 from __future__ import annotations
 
+from asyncio import TimeoutError as AsyncTimeoutError
+from asyncio import sleep, wait_for
+from contextlib import suppress
 from importlib import import_module
-from logging import CRITICAL, INFO, Formatter, getLogger
+from logging import CRITICAL, INFO, Formatter, getLogger, StreamHandler
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from random import choice
 from sys import modules
 from textwrap import dedent
+from types import ModuleType
 from typing import TYPE_CHECKING
 
 from aiohttp import ClientSession
 from asyncpg import create_pool
 from nextcord import Embed, Interaction, Member, Thread, User, abc
-from nextcord.ext.commands import AutoShardedBot, when_mentioned, when_mentioned_or
+from nextcord.ext.commands import (
+    AutoShardedBot,
+    ExtensionNotFound,
+    when_mentioned,
+    when_mentioned_or,
+)
 
 from .blacklist import Blacklist
 from .emojis import Emojis
@@ -26,7 +35,7 @@ from .wraps import (
 )
 
 if TYPE_CHECKING:
-    from typing import Any, Callable, Optional, Union
+    from typing import Any, Callable, Mapping, Optional, Union
 
     from asyncpg import Pool
     from nextcord import Guild, Message, PartialMessageable
@@ -72,21 +81,23 @@ CREATE TABLE IF NOT EXISTS blacklist_users (
 """
 
 
-def get_handler():
+def get_handlers():
+    formatter = Formatter(
+        "%(levelname)-7s %(asctime)s %(filename)12s:%(funcName)-28s: %(message)s",
+        datefmt="%H:%M:%S %d/%m/%Y",
+    )
     h = RotatingFileHandler(
         "./logs/bot/io.log",
         maxBytes=1000000,
         backupCount=5,
         encoding="utf-8",
     )
-    h.setFormatter(
-        Formatter(
-            "%(levelname)-7s %(asctime)s %(filename)12s:%(funcName)-28s: %(message)s",
-            datefmt="%H:%M:%S %d/%m/%Y",
-        )
-    )
+    i = StreamHandler()
+
+    i.setFormatter(formatter)
+    h.setFormatter(formatter)
     h.namer = lambda name: name.replace(".log", "") + ".log"
-    return h
+    return h, i
 
 
 class BotBase(AutoShardedBot):
@@ -141,9 +152,10 @@ class BotBase(AutoShardedBot):
         log = getLogger()
         log.handlers = []
         log.setLevel(INFO)
-        h = get_handler()
+        h, i = get_handlers()
 
         log.addHandler(h)
+        log.addHandler(i)
         getLogger("asyncio").setLevel(CRITICAL)
 
         self.loop.set_exception_handler(self.asyncio_handler)
@@ -158,9 +170,8 @@ class BotBase(AutoShardedBot):
             self.db_enabled = True
             self.db_args = (db_url,)
             self.db_kwargs = {}
-        elif (
-            (db_name := getattr(config, "db_name", None))
-            and (db_user := getattr(config, "db_user", "ooliver"))
+        elif (db_name := getattr(config, "db_name", None)) and (
+            db_user := getattr(config, "db_user", "ooliver")
         ):
             self.db_enabled = True
             self.db_args = ()
@@ -169,6 +180,8 @@ class BotBase(AutoShardedBot):
                 "user": db_user,
                 "host": getattr(config, "db_host", None),
             }
+            if port := getattr(config, "db_port", None):
+                self.db_kwargs["port"] = port
         else:
             self.db_enabled = False
             self.db_args = ()
@@ -191,6 +204,7 @@ class BotBase(AutoShardedBot):
         self.logchannel: int | None = getattr(config, "logchannel", None)
         self.guild_ids: list[int] | None = getattr(config, "guild_ids", None)
         self.database_init: str = initialise + getattr(config, "database_init", "")
+        self.name: Optional[str] = getattr(config, "name", None)
 
         self._single_events: dict[str, Callable] = {
             "on_message": self.get_wrapped_message,
@@ -231,11 +245,18 @@ class BotBase(AutoShardedBot):
             )
         )
 
-    async def startup(self) -> None:
+    async def start(self, *args, **kwargs) -> None:
         if self.db_enabled:
-            db = await create_pool(*self.db_args, **self.db_kwargs)
-            assert db is not None
-            self.db = db
+            for tries in range(5):
+                try:
+                    db = await create_pool(*self.db_args, **self.db_kwargs)
+                    assert db is not None
+                    self.db = db
+                except AssertionError:
+                    await sleep(2.5 * tries + 1)
+                else:
+                    break
+
             await self.db.execute(self.database_init)
 
         if self.aiohttp_enabled:
@@ -244,9 +265,9 @@ class BotBase(AutoShardedBot):
         if self.blacklist_enabled and self.db_enabled:
             self.blacklist = Blacklist(self.db)
 
-    def run(self, *args, **kwargs) -> None:
-        self.loop.create_task(self.startup())
+        await super().start(*args, **kwargs)
 
+    def run(self, *args, **kwargs) -> None:
         cog_dir = f"{self.mod}/cogs" if self.mod else "./cogs"
         cogs = Path(cog_dir)
 
@@ -255,7 +276,7 @@ class BotBase(AutoShardedBot):
             if "extras" in ext.parts or any(part.startswith("_") for part in ext.parts):
                 continue
             if ext.suffix == ".py":
-                a = str(ext).replace("/", ".")[:-3]
+                a = ".".join(ext.parts).removesuffix(".py")
                 log.info("Loading ext %s", a)
                 self.load_extension(a)
                 log.info("Loaded ext %s", a)
@@ -263,8 +284,12 @@ class BotBase(AutoShardedBot):
         super().run(*args, **kwargs)
 
     async def close(self, *args, **kwargs) -> None:
-        if self.aiohttp_enabled:
+        if self.aiohttp_enabled and hasattr(self, "session"):
             await self.session.close()
+
+        if self.db_enabled and hasattr(self, "db"):
+            with suppress(AsyncTimeoutError):
+                await wait_for(self.db.close(), timeout=5)
 
         await super().close(*args, **kwargs)
 
@@ -531,3 +556,47 @@ class BotBase(AutoShardedBot):
             await self.get_channel(self.logchannel).send(embed=embed)  # type: ignore
         except AttributeError:
             pass
+
+    def load_extension(
+        self, name: str, *, extras: Optional[dict[str, Any]] = None
+    ) -> None:
+        ext = f"{self.name}.cogs.{name}" if self.name else name
+
+        try:
+            super().load_extension(ext, extras=extras)
+        except (ExtensionNotFound, ModuleNotFoundError):
+            super().load_extension(name, extras=extras)
+
+        if self.is_ready():
+            self.loop.create_task(self.sync_all_application_commands())
+
+    def reload_extension(self, name: str) -> None:
+        ext = f"{self.name}.cogs.{name}" if self.name else name
+
+        try:
+            super().reload_extension(ext)
+        except (ExtensionNotFound, ModuleNotFoundError):
+            super().reload_extension(name)
+
+        if self.is_ready():
+            self.loop.create_task(self.sync_all_application_commands())
+
+    def unload_extension(self, name: str) -> None:
+        ext = f"{self.name}.cogs.{name}" if self.name else name
+
+        try:
+            super().unload_extension(ext)
+        except (ExtensionNotFound, ModuleNotFoundError):
+            super().unload_extension(name)
+
+        self.loop.create_task(self.sync_all_application_commands())
+
+    @property
+    def extensions(self) -> Mapping[str, ModuleType]:
+        if not self.name:
+            return super().extensions
+
+        return {
+            k.removeprefix(f"{self.name}.cogs."): v
+            for k, v in super().extensions.items()
+        } | super().extensions
