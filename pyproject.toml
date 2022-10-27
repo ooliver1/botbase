@@ -19,7 +19,7 @@ botbase = "botbase.cli:main"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-asyncpg = ">=0.25,<0.27"
+asyncpg = ">=0.25,<0.28"
 nextcord = "^2.0.0"
 nextcord-ext-menus = "^1.5.2"
 jishaku = "2.4.0"
