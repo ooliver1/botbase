@@ -2,82 +2,181 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from nextcord import Embed, Object
-from nextcord.ext.commands import group, is_owner
+from nextcord import Embed, Object, slash_command
+from nextcord.ext.application_checks import is_owner
+from ormar import BigInteger, Model, String
 
+from ..botbase import BotBase
+from ..db import BaseMeta
 from ..models import CogBase
-from ..wraps import MyContext
+from ..wraps import MyInter
 
 if TYPE_CHECKING:
     from ..botbase import BotBase
 
 
-class BlacklistCog(CogBase):
-    @group(invoke_without_command=True, hidden=True)
-    @is_owner()
-    async def blacklist(self, ctx: MyContext) -> None:
-        await ctx.send_help(ctx.command)
+class BlacklistGuild(Model):
+    class Meta(BaseMeta):
+        tablename = "blacklist_guilds"
 
-    @blacklist.group(invoke_without_command=True)
-    @is_owner()
-    async def add(self, ctx: MyContext) -> None:
-        await ctx.send_help(ctx.command)
+    id: BigInteger = BigInteger(primary_key=True, autoincrement=False)
+    reason: String = String(max_length=255, default="Unknown reason.")
 
-    @add.command(name="person", aliases=["user"])
-    @is_owner()
-    async def add_person(self, ctx: MyContext, user: Object, *, reason=None) -> None:
-        assert self.bot.blacklist is not None
-        await self.bot.blacklist.add(user.id, reason=reason, guild=False)
-        await ctx.send_embed(desc=f"I have added <@{user.id}> to the blacklist.")
 
-    @add.command(name="guild", aliases=["server"])
+class BlacklistUser(Model):
+    class Meta(BaseMeta):
+        tablename = "blacklist_users"
+
+    id: BigInteger = BigInteger(primary_key=True, autoincrement=False)
+    reason: String = String(max_length=255, default="Unknown reason.")
+
+
+class Blacklist:
+    def __init__(self) -> None:
+        self.guilds = set()
+        self.users = set()
+
+    def __contains__(self, obj: int) -> bool:
+        assert isinstance(obj, int)
+
+        return obj in self.guilds or obj in self.users
+
+    async def add(
+        self, obj: int, reason: str = "Unknown reason", guild: bool = False
+    ) -> None:
+        assert isinstance(obj, int)
+
+        if guild:
+            self.guilds.add(obj)
+            await BlacklistGuild.objects.create(id=obj, reason=reason)
+        else:
+            self.users.add(obj)
+            await BlacklistUser.objects.create(id=obj, reason=reason)
+
+    async def remove(self, obj: int, guild: bool = False) -> None:
+        assert isinstance(obj, int)
+
+        if guild:
+            self.guilds.discard(obj)
+            await BlacklistGuild.objects.delete(id=obj)
+        else:
+            self.users.discard(obj)
+            await BlacklistUser.objects.delete(id=obj)
+
+    async def load(self) -> None:
+        self.guilds = set(await BlacklistGuild.objects.values_list("id", flatten=True))
+        self.users = set(await BlacklistUser.objects.values_list("id", flatten=True))
+
+
+class BlacklistCog(CogBase[BotBase]):
+    def __init__(self, bot: BotBase) -> None:
+        super().__init__(bot)
+
+        self.blacklist = Blacklist()
+        bot.loop.create_task(self.load_blacklist())
+        self.old_process_application_commands = bot.process_application_commands
+        bot.process_application_commands = self.check  # type: ignore  # MyInter + Interaction
+
+        if bot.guild_ids:
+            self.blacklist_.guild_ids_to_rollout.update(bot.guild_ids)
+
+    async def load_blacklist(self) -> None:
+        await self.blacklist.load()
+
+    async def check(self, interaction: MyInter) -> None:
+        if interaction.guild_id in self.blacklist.guilds:
+            return
+
+        if interaction.user.id in self.blacklist.users:
+            return
+
+        await self.bot.process_application_commands(interaction)
+
+    def cog_unload(self) -> None:
+        self.bot.process_application_commands = self.old_process_application_commands
+
+    @slash_command(name="blacklist", description="Blacklist a user or guild.")
     @is_owner()
-    async def add_guild(self, ctx: MyContext, guild: Object, *, reason=None) -> None:
-        assert self.bot.blacklist is not None
-        await self.bot.blacklist.add(guild.id, reason=reason, guild=True)
-        await ctx.send_embed(
-            desc=f"I have added the guild `{guild.id}` to the blacklist"
+    async def blacklist_(self, inter: MyInter) -> None:
+        ...
+
+    @blacklist_.subcommand(name="add")
+    async def blacklist_add(self, inter: MyInter) -> None:
+        ...
+
+    @blacklist_add.subcommand(name="user", description="Blacklist a user.")
+    async def blacklist_add_user(self, inter: MyInter, user: Object) -> None:
+        await self.blacklist.add(user.id, guild=False)
+        await inter.response.send_message(
+            embed=Embed(
+                description=f"I have added <@{user.id}> to the blacklist.",
+                color=self.bot.color,
+            ),
+            ephemeral=True,
         )
 
-    @blacklist.command()
-    @is_owner()
-    async def list(self, ctx: MyContext) -> None:
-        assert self.bot.blacklist is not None
-        if self.bot.blacklist.users:
-            user_blacklists = "\n".join(f"`{u}`" for u in self.bot.blacklist.users)
+    @blacklist_add.subcommand(name="guild", description="Blacklist a guild.")
+    async def blacklist_add_guild(self, inter: MyInter, guild: Object) -> None:
+        await self.blacklist.add(guild.id, guild=True)
+        await inter.response.send_message(
+            embed=Embed(
+                description=f"I have added `{guild.id}` to the blacklist.",
+                color=self.bot.color,
+            ),
+            ephemeral=True,
+        )
+
+    @blacklist_.subcommand(name="remove")
+    async def blacklist_remove(self, inter: MyInter) -> None:
+        ...
+
+    @blacklist_remove.subcommand(
+        name="user", description="Remove a user from the blacklist."
+    )
+    async def blacklist_remove_user(self, inter: MyInter, user: Object) -> None:
+        await self.blacklist.remove(user.id, guild=False)
+        await inter.response.send_message(
+            embed=Embed(
+                description=f"I have removed <@{user.id}> from the blacklist.",
+                color=self.bot.color,
+            ),
+            ephemeral=True,
+        )
+
+    @blacklist_remove.subcommand(
+        name="guild", description="Remove a guild from the blacklist."
+    )
+    async def blacklist_remove_guild(self, inter: MyInter, guild: Object) -> None:
+        await self.blacklist.remove(guild.id, guild=True)
+        await inter.response.send_message(
+            embed=Embed(
+                description=f"I have removed `{guild.id}` from the blacklist.",
+                color=self.bot.color,
+            ),
+            ephemeral=True,
+        )
+
+    @blacklist_.subcommand(
+        name="list", description="List all blacklisted users and guilds."
+    )
+    async def blacklist_list(self, inter: MyInter) -> None:
+        if self.blacklist.users:
+            user_blacklists = "\n".join(f"`{u}`" for u in self.blacklist.users)
         else:
             user_blacklists = "No user's blacklisted."
 
-        if self.bot.blacklist.guilds:
-            guild_blacklists = "\n".join(f"`{g}`" for g in self.bot.blacklist.guilds)
+        if self.blacklist.guilds:
+            guild_blacklists = "\n".join(f"`{g}`" for g in self.blacklist.guilds)
         else:
             guild_blacklists = "No guild's blacklisted."
 
-        await ctx.send(
+        await inter.response.send_message(
             embed=Embed(
                 title="Blacklists",
                 description=f"Users:\n{user_blacklists}\n\nGuilds:\n{guild_blacklists}",
-            )
+            ),
+            ephemeral=True,
         )
-
-    @blacklist.group(invoke_without_command=True)
-    @is_owner()
-    async def remove(self, ctx: MyContext) -> None:
-        await ctx.send_help(ctx.command)
-
-    @remove.command(name="person", aliases=["user"])
-    @is_owner()
-    async def remove_person(self, ctx: MyContext, user: Object) -> None:
-        assert self.bot.blacklist is not None
-        await self.bot.blacklist.remove(user.id, guild=False)
-        await ctx.send_embed(desc="I have completed that action for you.")
-
-    @remove.command(name="guild", aliases=["server"])
-    @is_owner()
-    async def remove_guild(self, ctx: MyContext, guild: Object) -> None:
-        assert self.bot.blacklist is not None
-        await self.bot.blacklist.remove(guild.id, guild=True)
-        await ctx.send_embed(desc="I have completed that action for you.")
 
 
 def setup(bot: BotBase):

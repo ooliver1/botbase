@@ -70,14 +70,6 @@ CREATE TABLE IF NOT EXISTS commands (
     amount INT,
     UNIQUE(command, guild, channel, member)
 );
-CREATE TABLE IF NOT EXISTS blacklist_guilds (
-    id BIGINT PRIMARY KEY,
-    reason VARCHAR
-);
-CREATE TABLE IF NOT EXISTS blacklist_users (
-    id BIGINT PRIMARY KEY,
-    reason VARCHAR
-);
 """
 
 
@@ -103,7 +95,6 @@ def get_handlers():
 class BotBase(AutoShardedBot):
     db: Pool
     session: ClientSession
-    blacklist: Optional[Blacklist]
 
     @staticmethod
     def get_config(config_module: str) -> tuple[str, str]:
@@ -224,7 +215,6 @@ class BotBase(AutoShardedBot):
 
         if self.blacklist_enabled:
             self.load_extension("botbase.cogs.blacklist")
-            self.blacklist = None
 
     @property
     def color(self) -> int:
@@ -261,9 +251,6 @@ class BotBase(AutoShardedBot):
 
         if self.aiohttp_enabled:
             self.session = ClientSession()
-
-        if self.blacklist_enabled and self.db_enabled:
-            self.blacklist = Blacklist(self.db)
 
         await super().start(*args, **kwargs)
 
@@ -316,19 +303,6 @@ class BotBase(AutoShardedBot):
 
     async def on_application_command_error(*_):
         ...  # hope an event handler exists
-
-    async def process_commands(self, message: Message) -> None:
-        if message.author.bot:
-            return
-
-        if self.blacklist and message.author.id in self.blacklist:
-            return log.debug("Ignoring blacklisted user %s", message.author.id)
-        elif self.blacklist and message.guild and message.guild.id in self.blacklist:
-            return log.debug("Ignoring blacklisted guild %s", message.guild.id)
-
-        ctx = await self.get_context(message, cls=MyContext)
-
-        await self.invoke(ctx)
 
     async def on_interaction(self, interaction: Interaction) -> None:
         i = self.get_wrapped_interaction(interaction)
