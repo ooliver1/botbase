@@ -23,10 +23,8 @@ from nextcord.ext.commands import (
     when_mentioned_or,
 )
 
-from .blacklist import Blacklist
 from .emojis import Emojis
 from .wraps import (
-    MyContext,
     MyInter,
     WrappedChannel,
     WrappedMember,
@@ -307,11 +305,6 @@ class BotBase(AutoShardedBot):
     async def on_interaction(self, interaction: Interaction) -> None:
         i = self.get_wrapped_interaction(interaction)
 
-        if self.blacklist and i.author.id in self.blacklist:
-            return log.debug("Ignoring blacklisted user %s", i.author.id)
-        elif self.blacklist and i.guild and i.guild.id in self.blacklist:
-            return log.debug("Ignoring blacklisted guild %s", i.guild.id)
-
         await self.process_application_commands(i)
 
     async def getch_member(self, guild_id: int, member_id: int) -> WrappedMember:
@@ -396,44 +389,6 @@ class BotBase(AutoShardedBot):
         else:
             super().dispatch(event_name, *args, **kwargs)
 
-    async def on_command_completion(self, ctx: MyContext):
-        if not self.db_enabled:
-            return
-
-        if ctx.guild is not None:
-            await self.db.execute(
-                """INSERT INTO commands (command, guild, channel, member, amount) 
-                VALUES ($1,$2,$3,$4,$5) 
-                ON CONFLICT (command, guild, channel, member) DO UPDATE
-                    SET amount = commands.amount + 1""",
-                ctx.command.qualified_name,  # type: ignore
-                ctx.guild.id,
-                ctx.channel.id,
-                ctx.author.id,
-                1,
-            )
-        else:
-            a = await self.db.fetchval(
-                "SELECT * FROM commands WHERE member=$1 AND channel IS NULL and guild IS NULL",
-                ctx.author.id,
-            )
-            if a is None:
-                await self.db.execute(
-                    """INSERT INTO commands (command, guild, channel, member, amount) 
-                    VALUES ($1,$2,$3,$4,$5)""",
-                    ctx.command.qualified_name,  # type: ignore
-                    None,
-                    None,
-                    ctx.author.id,
-                    1,
-                )
-            else:
-                await self.db.execute(
-                    """UPDATE commands SET amount = commands.amount + 1 
-                    WHERE member=$1 AND channel IS NULL and guild IS NULL""",
-                    ctx.author.id,
-                )
-
     async def on_application_command_completion(self, inter: MyInter):
         if not self.db_enabled:
             return
@@ -476,11 +431,6 @@ class BotBase(AutoShardedBot):
         if not self.logchannel:
             return
         elif not self.db_enabled:
-            return
-
-        if self.blacklist and guild.id in self.blacklist.guilds:
-            log.info("Leaving blacklisted Guild(id=%s)", guild.id)
-            await guild.leave()
             return
 
         assert guild.owner_id is not None

@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from logging import getLogger
 from typing import TYPE_CHECKING
 
-from nextcord import Embed, Object, slash_command
+from nextcord import Embed, Guild, Object, slash_command
 from nextcord.ext.application_checks import is_owner
 from ormar import BigInteger, Model, String
 
@@ -13,6 +14,10 @@ from ..wraps import MyInter
 
 if TYPE_CHECKING:
     from ..botbase import BotBase
+
+
+_log = getLogger(__name__)
+__all__ = ("BlacklistGuild", "BlacklistUser")
 
 
 class BlacklistGuild(Model):
@@ -85,15 +90,22 @@ class BlacklistCog(CogBase[BotBase]):
 
     async def check(self, interaction: MyInter) -> None:
         if interaction.guild_id in self.blacklist.guilds:
-            return
+            return _log.info("Ignoring blacklisted Guild(id=%s)", interaction.guild_id)
 
         if interaction.user.id in self.blacklist.users:
-            return
+            return _log.info("Ignoring blacklisted User(id=%s)", interaction.user.id)
 
         await self.bot.process_application_commands(interaction)
 
     def cog_unload(self) -> None:
         self.bot.process_application_commands = self.old_process_application_commands
+
+    @CogBase.listener()
+    async def on_guild_join(self, guild: Guild):
+        if guild.id in self.blacklist.guilds:
+            _log.info("Leaving blacklisted Guild(id=%s)", guild.id)
+            await guild.leave()
+            return
 
     @slash_command(name="blacklist", description="Blacklist a user or guild.")
     @is_owner()
