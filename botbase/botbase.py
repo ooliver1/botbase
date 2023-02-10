@@ -17,6 +17,7 @@ from nextcord import Embed, Intents, Interaction, Member, Thread, User, abc
 from nextcord.ext.commands import AutoShardedBot, ExtensionNotFound
 from nextcord.utils import MISSING
 
+from .db import database
 from .wraps import MyInter, WrappedChannel, WrappedMember, WrappedThread, WrappedUser
 
 if TYPE_CHECKING:
@@ -238,16 +239,16 @@ class BotBase(AutoShardedBot):
             )
         )
 
-    async def start(self, *args, **kwargs) -> None:
+    async def start(self, token: str, *, reconnect: bool = True) -> None:
         if self.db_enabled:
-            # TODO:
-            ...
+            await database.connect()
+
         if self.aiohttp_enabled:
             self.session = ClientSession()
 
-        await super().start(*args, **kwargs)
+        await super().start(token, reconnect=reconnect)
 
-    def run(self, *args, **kwargs) -> None:
+    def run(self, token: str, *, reconnect: bool = True) -> None:
         cogs = Path(self.module)
 
         for ext in cogs.glob("exts/**/*.py"):
@@ -261,7 +262,7 @@ class BotBase(AutoShardedBot):
                 self.load_extension(a)
                 log.info("Loaded ext %s", a)
 
-        super().run(*args, **kwargs)
+        super().run(token, reconnect=reconnect)
 
     async def close(self, *args, **kwargs) -> None:
         if self.aiohttp_enabled and hasattr(self, "session"):
