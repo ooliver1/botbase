@@ -42,18 +42,6 @@ if TYPE_CHECKING:
 log = getLogger(__name__)
 
 
-initialise = """
-CREATE TABLE IF NOT EXISTS commands (
-    command VARCHAR NOT NULL,
-    guild BIGINT,
-    channel BIGINT,
-    member BIGINT NOT NULL,
-    amount INT,
-    UNIQUE(command, guild, channel, member)
-);
-"""
-
-
 def get_handlers():
     formatter = Formatter(
         "%(levelname)-7s %(asctime)s %(filename)12s:%(funcName)-28s: %(message)s",
@@ -109,6 +97,7 @@ class BotBase(AutoShardedBot):
         name: str | None = None,
         log_channel: int | None = None,
         guild_ids: Sequence[int] | None = None,
+        log_commands: bool = True,
         # nextcord
         help_command: HelpCommand | None = None,
         description: str | None = None,
@@ -199,7 +188,6 @@ class BotBase(AutoShardedBot):
         self.aiohttp_enabled: bool = aiohttp_enabled
         self.colours: list[int] = colours
         self.name: str | None = name
-        self.blacklist_enabled: bool = blacklist_enabled
         self.db_enabled: bool = db_enabled
         self.log_channel: int | None = log_channel
         self.guild_ids: Sequence[int] | None = guild_ids
@@ -217,8 +205,11 @@ class BotBase(AutoShardedBot):
 
         self.load_extension("jishaku")
 
-        if self.blacklist_enabled:
-            self.load_extension("botbase.cogs.blacklist")
+        if blacklist_enabled:
+            self.load_extension("botbase.exts.blacklist")
+
+        if log_commands:
+            self.load_extension("botbase.exts.log_commands")
 
     @property
     def colour(self) -> int:
@@ -363,44 +354,6 @@ class BotBase(AutoShardedBot):
 
         else:
             super().dispatch(event_name, *args, **kwargs)
-
-    async def on_application_command_completion(self, inter: MyInter):
-        if not self.db_enabled:
-            return
-
-        if inter.guild is not None:
-            await self.db.execute(
-                """INSERT INTO commands (command, guild, channel, member, amount) 
-                VALUES ($1,$2,$3,$4,$5) 
-                ON CONFLICT (command, guild, channel, member) DO UPDATE
-                    SET amount = commands.amount + 1""",
-                inter.command,
-                inter.guild.id,
-                inter.channel.id,  # type: ignore
-                inter.author.id,
-                1,
-            )
-        else:
-            a = await self.db.fetchval(
-                "SELECT * FROM commands WHERE member=$1 AND channel IS NULL and guild IS NULL",
-                inter.author.id,
-            )
-            if a is None:
-                await self.db.execute(
-                    """INSERT INTO commands (command, guild, channel, member, amount) 
-                    VALUES ($1,$2,$3,$4,$5)""",
-                    inter.command,
-                    None,
-                    None,
-                    inter.author.id,
-                    1,
-                )
-            else:
-                await self.db.execute(
-                    """UPDATE commands SET amount = commands.amount + 1 
-                    WHERE member=$1 AND channel IS NULL and guild IS NULL""",
-                    inter.author.id,
-                )
 
     async def on_guild_join(self, guild: Guild):
         if not self.log_channel:

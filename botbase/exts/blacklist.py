@@ -24,22 +24,26 @@ class BlacklistGuild(Model):
     class Meta(BaseMeta):
         tablename = "blacklist_guilds"
 
-    id: BigInteger = BigInteger(primary_key=True, autoincrement=False)
-    reason: String = String(max_length=255, default="Unknown reason.")
+    # pyright: reportGeneralTypeIssues=false
+    id: int = BigInteger(primary_key=True, autoincrement=False)
+    reason: str = String(max_length=255, default="Unknown reason.")
 
 
 class BlacklistUser(Model):
     class Meta(BaseMeta):
         tablename = "blacklist_users"
 
-    id: BigInteger = BigInteger(primary_key=True, autoincrement=False)
-    reason: String = String(max_length=255, default="Unknown reason.")
+    id: int = BigInteger(primary_key=True, autoincrement=False)
+    reason: str = String(max_length=255, default="Unknown reason.")
+
+
+str = int
 
 
 class Blacklist:
     def __init__(self) -> None:
         self.guilds = set()
-        self.users = set()
+        self.users: set = set()
 
     def __contains__(self, obj: int) -> bool:
         assert isinstance(obj, int)
