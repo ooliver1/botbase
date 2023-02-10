@@ -14,9 +14,6 @@ if TYPE_CHECKING:
     from ..botbase import BotBase
 
 
-_log = getLogger(__name__)
-
-
 class CommandLog(Model):
     class Meta(BaseMeta):
         tablename = "commands"

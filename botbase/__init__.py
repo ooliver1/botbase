@@ -3,7 +3,6 @@ from logging import NullHandler, getLogger
 from .botbase import *
 from .checks import *
 from .exts import *
-from .exceptions import *
 from .models import *
 from .wraps import *
 
