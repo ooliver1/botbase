@@ -98,6 +98,7 @@ class BotBase(AutoShardedBot):
         log_channel: int | None = None,
         guild_ids: Sequence[int] | None = None,
         log_commands: bool = True,
+        log_guilds: bool = False,
         # nextcord
         help_command: HelpCommand | None = None,
         description: str | None = None,
@@ -210,6 +211,9 @@ class BotBase(AutoShardedBot):
 
         if log_commands:
             self.load_extension("botbase.exts.log_commands")
+
+        if log_guilds:
+            self.load_extension("botbase.exts.log_guilds")
 
     @property
     def colour(self) -> int:
@@ -354,60 +358,6 @@ class BotBase(AutoShardedBot):
 
         else:
             super().dispatch(event_name, *args, **kwargs)
-
-    async def on_guild_join(self, guild: Guild):
-        if not self.log_channel:
-            return
-        elif not self.db_enabled:
-            return
-
-        assert guild.owner_id is not None
-
-        embed = Embed(
-            title="New Guild!",
-            description=dedent(
-                f"""
-
-        **{guild.name}**
-        id: `{guild.id}`
-        members: `{guild.member_count}`
-        owner: `{guild.owner or await self.fetch_user(guild.owner_id)}`
-
-        """
-            ),
-            color=self.colour,
-        )
-        await self.get_channel(self.log_channel).send(embed=embed)  # type: ignore
-
-    async def on_guild_remove(self, guild: Guild):
-        if guild.unavailable:
-            return
-
-        if not self.log_channel:
-            return
-        elif not self.db_enabled:
-            return
-
-        assert guild.owner_id is not None
-
-        embed = Embed(
-            title="Removed Guild :(",
-            description=dedent(
-                f"""
-
-        **{guild.name}**
-        id: `{guild.id}`
-        members: `{guild.member_count}`
-        owner: `{guild.owner or await self.fetch_user(guild.owner_id)}`
-
-        """
-            ),
-            color=self.colour,
-        )
-        try:
-            await self.get_channel(self.log_channel).send(embed=embed)  # type: ignore
-        except AttributeError:
-            pass
 
     def load_extension(
         self, name: str, *, extras: dict[str, Any] | None = None
