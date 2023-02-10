@@ -5,10 +5,6 @@ description = "A personal nextcord bot base package for bots."
 authors = ["ooliver1 <oliverwilkes2006@icloud.com>"]
 license = "MIT"
 repository = "https://github.com/ooliver1/botbase"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "Operating System :: OS Independent",
-]
 packages = [
     {include = "botbase" },
 ]
