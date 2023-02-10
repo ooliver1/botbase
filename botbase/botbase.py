@@ -40,19 +40,6 @@ if TYPE_CHECKING:
 
 
 log = getLogger(__name__)
-defaulthelpmsg = """
-HI! Welcome to the help page for {name}!
-
-Use `{prefix}help <command>` for more info on a command,
-or `{prefix}help <category>` for more info on a category,
-
-Use the dropdown below to select a category.
-
-Have fun!
-"""
-defaulthelpindex = """
-I have been up since {created_at} and I serve for you!
-"""
 
 
 initialise = """
@@ -184,8 +171,6 @@ class BotBase(AutoShardedBot):
         self.colors: list[int] = getattr(config, "colors", [0x9966CC])
         self.blacklist_enabled: bool = getattr(config, "blacklist_enabled", True)
         self.default_pre: list[str] = getattr(config, "prefix", [])
-        self.helpmsg: str = getattr(config, "helpmsg", defaulthelpmsg)
-        self.helpindex: str = getattr(config, "helpindex", defaulthelpindex)
         self.helpfields: dict[str, str] = getattr(config, "helpfields", {})
         self.helptitle: str = getattr(config, "helptitle", "Help Me {name}!")
         self.helpinsert: str = getattr(config, "helpinsert", "")
