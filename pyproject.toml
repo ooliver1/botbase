@@ -14,9 +14,6 @@ packages = [
 ]
 readme = "README.md"
 
-[tool.poetry.scripts]
-botbase = "botbase.cli:main"
-
 [tool.poetry.dependencies]
 python = "^3.8"
 asyncpg = ">=0.25,<0.28"
