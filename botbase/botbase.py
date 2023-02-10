@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 from asyncio import TimeoutError as AsyncTimeoutError
-from asyncio import sleep, wait_for
+from asyncio import wait_for
 from contextlib import suppress
-from importlib import import_module
-from logging import CRITICAL, INFO, Formatter, getLogger, StreamHandler
+from logging import CRITICAL, INFO, Formatter, StreamHandler, getLogger
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from random import choice
@@ -13,40 +12,36 @@ from textwrap import dedent
 from types import ModuleType
 from typing import TYPE_CHECKING
 
-from aiohttp import ClientSession
-from asyncpg import create_pool
-from nextcord import Embed, Interaction, Member, Thread, User, abc
-from nextcord.ext.commands import (
-    AutoShardedBot,
-    ExtensionNotFound,
-    when_mentioned,
-    when_mentioned_or,
-)
+from aiohttp import BaseConnector, BasicAuth, ClientSession
+from nextcord import Embed, Intents, Interaction, Member, Thread, User, abc
+from nextcord.ext.commands import AutoShardedBot, ExtensionNotFound
+from nextcord.utils import MISSING
 
-from .emojis import Emojis
-from .wraps import (
-    MyInter,
-    WrappedChannel,
-    WrappedMember,
-    WrappedThread,
-    WrappedUser,
-)
+from .wraps import MyInter, WrappedChannel, WrappedMember, WrappedThread, WrappedUser
 
 if TYPE_CHECKING:
-    from typing import Any, Callable, Mapping, Optional, Union
+    from asyncio import AbstractEventLoop
+    from typing import Any, Awaitable, Callable, Iterable, Mapping, Sequence, Union
 
     from asyncpg import Pool
-    from nextcord import Guild, Message, PartialMessageable
+    from nextcord import (
+        AllowedMentions,
+        BaseActivity,
+        Guild,
+        MemberCacheFlags,
+        Message,
+        PartialMessageable,
+        Status,
+    )
+    from nextcord.ext.commands import Bot, HelpCommand
+
+    _NonCallablePrefix = Union[str, Sequence[str]]
 
 
 log = getLogger(__name__)
 
 
 initialise = """
-CREATE TABLE IF NOT EXISTS guilds (
-    id BIGINT PRIMARY KEY,
-    prefix VARCHAR
-);
 CREATE TABLE IF NOT EXISTS commands (
     command VARCHAR NOT NULL,
     guild BIGINT,
@@ -82,7 +77,7 @@ class BotBase(AutoShardedBot):
     session: ClientSession
 
     @staticmethod
-    def get_config(config_module: str) -> tuple[str, str]:
+    def get_module() -> str:
         file = modules["__main__"].__file__
 
         if file is None:
@@ -91,37 +86,100 @@ class BotBase(AutoShardedBot):
         path = Path(file)
 
         if path.parts[-1] == "__main__.py":
-            mod = path.parts[-2]
-            return f"{mod}.{config_module}", mod
-        else:
-            return config_module, ""
+            return "/".join(path.parts[:-1])
 
-    def __init__(self, *args, config_module: str = "config", **kwargs) -> None:
-        cfg, mod = self.get_config(config_module.rstrip(".py"))
-        try:
-            config = import_module(cfg)
-        except ImportError:
-            config = None
+        return "."
 
-        if not getattr(config, "prefix", None):
-            default_getter = when_mentioned
-            kwargs["help_command"] = None
-            set_help = False
-        else:
-            default_getter = self.get_pre
-            set_help = True
-
-        pre = kwargs.pop("command_prefix", default_getter)
-        saf = kwargs.pop("strip_after_prefix", True)
-        ca = kwargs.pop("case_insensitive", True)
-
+    def __init__(
+        self,
+        command_prefix: Union[
+            _NonCallablePrefix,
+            Callable[
+                [Union[Bot, AutoShardedBot], Message],
+                Union[Awaitable[_NonCallablePrefix], _NonCallablePrefix],
+            ],
+        ] = tuple(),
+        *,
+        version: str = "0.0.0",
+        aiohttp_enabled: bool = True,
+        blacklist_enabled: bool = True,
+        db_enabled: bool = True,
+        colours: list[int] = [0x9966CC],
+        name: str | None = None,
+        log_channel: int | None = None,
+        guild_ids: Sequence[int] | None = None,
+        # nextcord
+        help_command: HelpCommand | None = None,
+        description: str | None = None,
+        max_messages: int | None = 1000,
+        connector: BaseConnector | None = None,
+        proxy: str | None = None,
+        proxy_auth: BasicAuth | None = None,
+        shard_id: int | None = None,
+        shard_count: int | None = None,
+        shard_ids: list[int] | None = None,
+        application_id: int | None = None,
+        intents: Intents = Intents.default(),
+        member_cache_flags: MemberCacheFlags = MISSING,
+        chunk_guilds_at_startup: bool = MISSING,
+        status: Status | None = None,
+        activity: BaseActivity | None = None,
+        allowed_mentions: AllowedMentions | None = None,
+        heartbeat_timeout: float = 60.0,
+        guild_ready_timeout: float = 2.0,
+        assume_unsync_clock: bool = True,
+        enable_debug_events: bool = False,
+        loop: AbstractEventLoop | None = None,
+        lazy_load_commands: bool = True,
+        rollout_associate_known: bool = True,
+        rollout_delete_unknown: bool = True,
+        rollout_register_new: bool = True,
+        rollout_update_known: bool = True,
+        rollout_all_guilds: bool = False,
+        default_guild_ids: list[int] | None = None,
+        owner_id: int | None = None,
+        owner_ids: Iterable[int] | None = None,
+        strip_after_prefix: bool = False,
+        case_insensitive: bool = False,
+        **kwargs: Any,  # fallback for missing args
+    ) -> None:
         super().__init__(
-            *args,
-            command_prefix=pre,
-            strip_after_prefix=saf,
-            case_insensitive=ca,
+            command_prefix=command_prefix,
+            help_command=help_command,
+            description=description,
+            max_messages=max_messages,
+            connector=connector,
+            proxy=proxy,
+            proxy_auth=proxy_auth,
+            shard_id=shard_id,
+            shard_count=shard_count,
+            shard_ids=shard_ids,
+            application_id=application_id,
+            intents=intents,
+            member_cache_flags=member_cache_flags,
+            chunk_guilds_at_startup=chunk_guilds_at_startup,
+            status=status,
+            activity=activity,
+            allowed_mentions=allowed_mentions,
+            heartbeat_timeout=heartbeat_timeout,
+            guild_ready_timeout=guild_ready_timeout,
+            assume_unsync_clock=assume_unsync_clock,
+            enable_debug_events=enable_debug_events,
+            loop=loop,
+            lazy_load_commands=lazy_load_commands,
+            rollout_associate_known=rollout_associate_known,
+            rollout_delete_unknown=rollout_delete_unknown,
+            rollout_register_new=rollout_register_new,
+            rollout_update_known=rollout_update_known,
+            rollout_all_guilds=rollout_all_guilds,
+            default_guild_ids=default_guild_ids,
+            owner_id=owner_id,
+            owner_ids=owner_ids,
+            strip_after_prefix=strip_after_prefix,
+            case_insensitive=case_insensitive,
             **kwargs,
         )
+        self.module = self.get_module()
 
         self.prefix: dict[int, list[str]] = {}
 
@@ -136,49 +194,14 @@ class BotBase(AutoShardedBot):
 
         self.loop.set_exception_handler(self.asyncio_handler)
 
-        self.mod = mod
-
-        self.db_enabled: bool
-        self.db_args: tuple[Any, ...]
-        self.db_kwargs: dict[str, Any]
-
-        if db_url := getattr(config, "db_url", None):
-            self.db_enabled = True
-            self.db_args = (db_url,)
-            self.db_kwargs = {}
-        elif (db_name := getattr(config, "db_name", None)) and (
-            db_user := getattr(config, "db_user", "ooliver")
-        ):
-            self.db_enabled = True
-            self.db_args = ()
-            self.db_kwargs = {
-                "database": db_name,
-                "user": db_user,
-                "host": getattr(config, "db_host", None),
-            }
-            if port := getattr(config, "db_port", None):
-                self.db_kwargs["port"] = port
-        else:
-            self.db_enabled = False
-            self.db_args = ()
-            self.db_kwargs = {}
-
-        if init := getattr(config, "init", None):
-            self.db_kwargs["init"] = init
-
-        self.version: str = getattr(config, "version", "0.0.0")
-        self.aiohttp_enabled: bool = getattr(config, "aiohttp_enabled", True)
-        self.colors: list[int] = getattr(config, "colors", [0x9966CC])
-        self.blacklist_enabled: bool = getattr(config, "blacklist_enabled", True)
-        self.default_pre: list[str] = getattr(config, "prefix", [])
-        self.helpfields: dict[str, str] = getattr(config, "helpfields", {})
-        self.helptitle: str = getattr(config, "helptitle", "Help Me {name}!")
-        self.helpinsert: str = getattr(config, "helpinsert", "")
-        self.emojiset: Any = getattr(config, "emojiset", Emojis())
-        self.logchannel: int | None = getattr(config, "logchannel", None)
-        self.guild_ids: list[int] | None = getattr(config, "guild_ids", None)
-        self.database_init: str = initialise + getattr(config, "database_init", "")
-        self.name: Optional[str] = getattr(config, "name", None)
+        self.version: str = version
+        self.aiohttp_enabled: bool = aiohttp_enabled
+        self.colours: list[int] = colours
+        self.name: str | None = name
+        self.blacklist_enabled: bool = blacklist_enabled
+        self.db_enabled: bool = db_enabled
+        self.log_channel: int | None = log_channel
+        self.guild_ids: Sequence[int] | None = guild_ids
 
         self._single_events: dict[str, Callable] = {
             "on_message": self.get_wrapped_message,
@@ -193,15 +216,12 @@ class BotBase(AutoShardedBot):
 
         self.load_extension("jishaku")
 
-        if set_help:
-            self.load_extension("botbase.cogs.help")
-
         if self.blacklist_enabled:
             self.load_extension("botbase.cogs.blacklist")
 
     @property
-    def color(self) -> int:
-        return choice(self.colors)
+    def colour(self) -> int:
+        return choice(self.colours)
 
     def asyncio_handler(self, _, context: dict) -> None:
         log = getLogger("notasyncio")
@@ -220,25 +240,15 @@ class BotBase(AutoShardedBot):
 
     async def start(self, *args, **kwargs) -> None:
         if self.db_enabled:
-            for tries in range(5):
-                try:
-                    db = await create_pool(*self.db_args, **self.db_kwargs)
-                    assert db is not None
-                    self.db = db
-                except AssertionError:
-                    await sleep(2.5 * tries + 1)
-                else:
-                    break
-
-            await self.db.execute(self.database_init)
-
+            # TODO:
+            ...
         if self.aiohttp_enabled:
             self.session = ClientSession()
 
         await super().start(*args, **kwargs)
 
     def run(self, *args, **kwargs) -> None:
-        cogs = Path(self.mod or "./")
+        cogs = Path(self.module)
 
         for ext in cogs.glob("exts/**/*.py"):
             log.info("Found file %s", ext)
@@ -262,27 +272,6 @@ class BotBase(AutoShardedBot):
                 await wait_for(self.db.close(), timeout=5)
 
         await super().close(*args, **kwargs)
-
-    @staticmethod
-    async def get_pre(bot: BotBase, message: Message) -> list[str]:
-        if not bot.db_enabled:
-            return bot.default_pre
-
-        if message.guild is not None:
-            try:
-                prefix = bot.prefix[message.guild.id]
-            except KeyError:
-                prefix = [
-                    await bot.db.fetchval(
-                        "SELECT prefix FROM guilds WHERE id=$1", message.guild.id
-                    )
-                ]
-                if prefix[0] is None:
-                    prefix = bot.default_pre
-                    bot.prefix[message.guild.id] = prefix
-        else:
-            prefix = bot.default_pre
-        return when_mentioned_or(*prefix)(bot, message)
 
     async def on_application_command_error(*_):
         ...  # hope an event handler exists
@@ -413,7 +402,7 @@ class BotBase(AutoShardedBot):
                 )
 
     async def on_guild_join(self, guild: Guild):
-        if not self.logchannel:
+        if not self.log_channel:
             return
         elif not self.db_enabled:
             return
@@ -432,15 +421,15 @@ class BotBase(AutoShardedBot):
 
         """
             ),
-            color=self.color,
+            color=self.colour,
         )
-        await self.get_channel(self.logchannel).send(embed=embed)  # type: ignore
+        await self.get_channel(self.log_channel).send(embed=embed)  # type: ignore
 
     async def on_guild_remove(self, guild: Guild):
         if guild.unavailable:
             return
 
-        if not self.logchannel:
+        if not self.log_channel:
             return
         elif not self.db_enabled:
             return
@@ -459,15 +448,15 @@ class BotBase(AutoShardedBot):
 
         """
             ),
-            color=self.color,
+            color=self.colour,
         )
         try:
-            await self.get_channel(self.logchannel).send(embed=embed)  # type: ignore
+            await self.get_channel(self.log_channel).send(embed=embed)  # type: ignore
         except AttributeError:
             pass
 
     def load_extension(
-        self, name: str, *, extras: Optional[dict[str, Any]] = None
+        self, name: str, *, extras: dict[str, Any] | None = None
     ) -> None:
         ext = f"{self.name}.exts.{name}" if self.name else name
 
