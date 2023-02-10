@@ -238,13 +238,13 @@ class BotBase(AutoShardedBot):
         await super().start(*args, **kwargs)
 
     def run(self, *args, **kwargs) -> None:
-        cog_dir = f"{self.mod}/cogs" if self.mod else "./cogs"
-        cogs = Path(cog_dir)
+        cogs = Path(self.mod or "./")
 
-        for ext in cogs.glob("**/*.py"):
+        for ext in cogs.glob("exts/**/*.py"):
             log.info("Found file %s", ext)
-            if "extras" in ext.parts or any(part.startswith("_") for part in ext.parts):
+            if any(part.startswith("_") for part in ext.parts):
                 continue
+
             if ext.suffix == ".py":
                 a = ".".join(ext.parts).removesuffix(".py")
                 log.info("Loading ext %s", a)
@@ -469,7 +469,7 @@ class BotBase(AutoShardedBot):
     def load_extension(
         self, name: str, *, extras: Optional[dict[str, Any]] = None
     ) -> None:
-        ext = f"{self.name}.cogs.{name}" if self.name else name
+        ext = f"{self.name}.exts.{name}" if self.name else name
 
         try:
             super().load_extension(ext, extras=extras)
@@ -480,7 +480,7 @@ class BotBase(AutoShardedBot):
             self.loop.create_task(self.sync_all_application_commands())
 
     def reload_extension(self, name: str) -> None:
-        ext = f"{self.name}.cogs.{name}" if self.name else name
+        ext = f"{self.name}.exts.{name}" if self.name else name
 
         try:
             super().reload_extension(ext)
@@ -491,7 +491,7 @@ class BotBase(AutoShardedBot):
             self.loop.create_task(self.sync_all_application_commands())
 
     def unload_extension(self, name: str) -> None:
-        ext = f"{self.name}.cogs.{name}" if self.name else name
+        ext = f"{self.name}.exts.{name}" if self.name else name
 
         try:
             super().unload_extension(ext)
@@ -506,6 +506,6 @@ class BotBase(AutoShardedBot):
             return super().extensions
 
         return {
-            k.removeprefix(f"{self.name}.cogs."): v
+            k.removeprefix(f"{self.name}.exts."): v
             for k, v in super().extensions.items()
         } | super().extensions
