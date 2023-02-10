@@ -42,11 +42,6 @@ class MyInter(wrap.Wrap, Interaction):
     def me(self) -> ClientUser | Member:
         return self.guild.me if self.guild is not None else self.bot.user  # type: ignore
 
-    @property
-    def command(self) -> str | None:
-        if self.data:
-            return self.data.get("name")
-
     @property  # maybe this is why it no worky
     def response(self) -> InteractionResponse:
         return self._wrapped.response

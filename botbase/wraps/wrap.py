@@ -75,32 +75,21 @@ class Wrap:
         try_channel: bool = False,
         **kwargs,
     ) -> Message | WebhookMessage | None:
-        from .context import MyContext
         from .channel import WrappedChannel
         from .inter import MyInter
         from .thread import WrappedThread
         from .member import WrappedMember
         from .user import WrappedUser
 
-        target = target or (
-            self.message  # ctx, reply=True
-            if reply and isinstance(self, MyContext)
-            else self  # Anything else (member.send)
-        )
+        target = target or self
 
         embed = Embed(title=title, description=desc, color=color or self._bot.color)
 
-        if contain_timestamp and isinstance(self, MyContext):
-            # Doesnt work on Channels, Users, Members
-            embed.timestamp = self.message.created_at
-        elif contain_timestamp:
+        if contain_timestamp:
             embed.timestamp = utcnow()
 
         if cmd_invoker and not isinstance(self, (WrappedChannel, WrappedThread)):
-            if isinstance(self, (MyContext)):
-                text = self.author.display_name
-                icon_url = self.author.display_avatar.url
-            elif isinstance(self, MyInter):
+            if isinstance(self, MyInter):
                 text = self.user.display_name
                 icon_url = self.user.display_avatar.url
             elif isinstance(self, (WrappedUser, WrappedMember)):
@@ -112,9 +101,7 @@ class Wrap:
             embed.set_footer(text=text, icon_url=icon_url)
 
         if author:
-            if isinstance(self, (MyContext)):
-                icon_url = self.author.display_avatar.url
-            elif isinstance(self, MyInter):
+            if isinstance(self, MyInter):
                 icon_url = self.user.display_avatar.url
             elif isinstance(self, (WrappedUser, WrappedMember)):
                 icon_url = self.display_avatar.url
@@ -142,14 +129,7 @@ class Wrap:
                 return await target.send(embed=embed, **kwargs)  # type: ignore
         elif isinstance(
             target,
-            (
-                WrappedUser,
-                WrappedMember,
-                WrappedChannel,
-                WrappedThread,
-                MyInter,
-                MyContext,
-            ),
+            (WrappedUser, WrappedMember, WrappedChannel, WrappedThread, MyInter),
         ):
             return await target.send(embed=embed, **kwargs)  # type: ignore
         else:

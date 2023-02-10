@@ -12,13 +12,6 @@ if TYPE_CHECKING:
 
 
 class WrappedChannel(wrap.Wrap, abc.GuildChannel, abc.PrivateChannel):  # type: ignore
-    @classmethod
-    async def convert(cls, ctx, argument: str) -> WrappedChannel:
-        channel: Union[
-            abc.GuildChannel, abc.PrivateChannel
-        ] = await TextChannelConverter().convert(ctx=ctx, argument=argument)
-        return cls(channel, ctx.bot)
-
     def __getattr__(self, item):
         return getattr(self._wrapped, item)
 
