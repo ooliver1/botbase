@@ -204,7 +204,7 @@ class BotBase(AutoShardedBot):
             )
         }
 
-        self.load_extension("jishaku")
+        self.load_extension("delarva")
 
         if blacklist_enabled:
             self.load_extension("botbase.exts.blacklist")
