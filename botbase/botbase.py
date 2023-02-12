@@ -204,7 +204,7 @@ class BotBase(AutoShardedBot):
             )
         }
 
-        self.load_extension("delarva")
+        self.load_extension("delarva", extras={"guild_ids": guild_ids})
 
         if blacklist_enabled:
             self.load_extension("botbase.exts.blacklist")
