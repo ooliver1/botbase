@@ -8,7 +8,6 @@ from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from random import choice
 from sys import modules
-from textwrap import dedent
 from types import ModuleType
 from typing import TYPE_CHECKING
 

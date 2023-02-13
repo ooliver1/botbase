@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from logging import getLogger
 from typing import TYPE_CHECKING
 
 from ormar import BigInteger, Model, String
