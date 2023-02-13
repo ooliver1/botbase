@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ormar import BigInteger, Model, String
+from ormar import BigInteger, Model, String, Integer
 from sqlalchemy import PrimaryKeyConstraint
 
 from ..botbase import BotBase
@@ -20,6 +20,7 @@ class CommandLog(Model):
         constraints = [PrimaryKeyConstraint("command", "guild", "channel", "member")]
 
     # pyright: reportGeneralTypeIssues=false
+    id: int = Integer(primary_key=True, autoincrement=True)
     command: str = String(max_length=255)
     guild: int = BigInteger()
     channel: int = BigInteger()
