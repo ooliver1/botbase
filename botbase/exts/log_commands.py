@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ormar import BigInteger, Model, String
+from sqlalchemy import PrimaryKeyConstraint
 
 from ..botbase import BotBase
 from ..db import BaseMeta
@@ -16,12 +17,13 @@ if TYPE_CHECKING:
 class CommandLog(Model):
     class Meta(BaseMeta):
         tablename = "commands"
+        constraints = [PrimaryKeyConstraint("command", "guild", "channel", "member")]
 
     # pyright: reportGeneralTypeIssues=false
-    command: str = String(max_length=255, primary_key=True)
-    guild: int = BigInteger(primary_key=True, autoincrement=False)
-    channel: int = BigInteger(primary_key=True, autoincrement=False)
-    member: int = BigInteger(primary_key=True, autoincrement=False)
+    command: str = String(max_length=255)
+    guild: int = BigInteger()
+    channel: int = BigInteger()
+    member: int = BigInteger()
     amount: int = BigInteger(default=1)
 
 
