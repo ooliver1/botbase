@@ -90,6 +90,8 @@ class BlacklistCog(CogBase[BotBase]):
             self.blacklist_.guild_ids_to_rollout.update(bot.guild_ids)
 
     async def load_blacklist(self) -> None:
+        await self.bot.wait_until_ready()
+
         await self.blacklist.load()
 
     async def check(self, interaction: MyInter) -> None:
