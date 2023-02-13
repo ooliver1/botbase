@@ -99,7 +99,7 @@ class BlacklistCog(CogBase[BotBase]):
         if interaction.user.id in self.blacklist.users:
             return _log.info("Ignoring blacklisted User(id=%s)", interaction.user.id)
 
-        await self.bot.process_application_commands(interaction)
+        await self.old_process_application_commands(interaction)
 
     def cog_unload(self) -> None:
         self.bot.process_application_commands = self.old_process_application_commands
