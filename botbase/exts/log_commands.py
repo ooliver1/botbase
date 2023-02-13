@@ -31,7 +31,7 @@ class CommandLogging(CogBase[BotBase]):
         )
         if not created:
             entry.amount += 1
-            await entry.save()
+            await entry.update()
 
 
 def setup(bot: BotBase):
