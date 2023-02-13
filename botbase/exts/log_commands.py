@@ -20,11 +20,19 @@ class CommandLogging(CogBase[BotBase]):
         assert inter.application_command is not None
 
         assert inter.channel is not None
+
+        cmd = inter.application_command.name
+        guild = inter.guild.id if inter.guild is not None else None
+        channel = inter.channel.id if inter.guild is not None else None
+        member = inter.user.id
+        command_id = f"{cmd}:{guild}:{channel}:{member}"
+
         entry, created = await CommandLog.objects.get_or_create(
-            command=inter.application_command.name,
-            guild=inter.guild.id if inter.guild is not None else None,
-            channel=inter.channel.id if inter.guild is not None else None,
-            member=inter.author.id,
+            id=command_id,
+            command=cmd,
+            guild=guild,
+            channel=channel,
+            member=member,
         )
         if not created:
             entry.amount += 1
