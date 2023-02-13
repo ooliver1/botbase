@@ -121,8 +121,8 @@ class BlacklistCog(CogBase[BotBase]):
         ...
 
     @blacklist_add.subcommand(name="user", description="Blacklist a user.")
-    async def blacklist_add_user(self, inter: MyInter, user: Object) -> None:
-        await self.blacklist.add(user.id, guild=False)
+    async def blacklist_add_user(self, inter: MyInter, user: str) -> None:
+        await self.blacklist.add(int(user), guild=False)
         await inter.response.send_message(
             embed=Embed(
                 description=f"I have added <@{user.id}> to the blacklist.",
@@ -132,8 +132,8 @@ class BlacklistCog(CogBase[BotBase]):
         )
 
     @blacklist_add.subcommand(name="guild", description="Blacklist a guild.")
-    async def blacklist_add_guild(self, inter: MyInter, guild: Object) -> None:
-        await self.blacklist.add(guild.id, guild=True)
+    async def blacklist_add_guild(self, inter: MyInter, guild: str) -> None:
+        await self.blacklist.add(int(guild), guild=True)
         await inter.response.send_message(
             embed=Embed(
                 description=f"I have added `{guild.id}` to the blacklist.",
@@ -149,8 +149,8 @@ class BlacklistCog(CogBase[BotBase]):
     @blacklist_remove.subcommand(
         name="user", description="Remove a user from the blacklist."
     )
-    async def blacklist_remove_user(self, inter: MyInter, user: Object) -> None:
-        await self.blacklist.remove(user.id, guild=False)
+    async def blacklist_remove_user(self, inter: MyInter, user: str) -> None:
+        await self.blacklist.remove(int(user), guild=False)
         await inter.response.send_message(
             embed=Embed(
                 description=f"I have removed <@{user.id}> from the blacklist.",
@@ -162,8 +162,8 @@ class BlacklistCog(CogBase[BotBase]):
     @blacklist_remove.subcommand(
         name="guild", description="Remove a guild from the blacklist."
     )
-    async def blacklist_remove_guild(self, inter: MyInter, guild: Object) -> None:
-        await self.blacklist.remove(guild.id, guild=True)
+    async def blacklist_remove_guild(self, inter: MyInter, guild: str) -> None:
+        await self.blacklist.remove(int(guild), guild=True)
         await inter.response.send_message(
             embed=Embed(
                 description=f"I have removed `{guild.id}` from the blacklist.",
