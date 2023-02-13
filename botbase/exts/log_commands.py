@@ -6,29 +6,12 @@ from ormar import BigInteger, Integer, Model, String
 from sqlalchemy import UniqueConstraint
 
 from ..botbase import BotBase
-from ..db import BaseMeta
+from ..db import BaseMeta, CommandLog
 from ..models import CogBase
 from ..wraps import MyInter
 
 if TYPE_CHECKING:
     from ..botbase import BotBase
-
-
-__all__ = ("CommandLog",)
-
-
-class CommandLog(Model):
-    class Meta(BaseMeta):
-        tablename = "commands"
-        constraints = [UniqueConstraint("command", "guild", "channel", "member")]
-
-    # pyright: reportGeneralTypeIssues=false
-    id: int = Integer(primary_key=True, autoincrement=True)
-    command: str = String(max_length=255)
-    guild: int = BigInteger()
-    channel: int = BigInteger()
-    member: int = BigInteger()
-    amount: int = BigInteger(default=1)
 
 
 class CommandLogging(CogBase[BotBase]):

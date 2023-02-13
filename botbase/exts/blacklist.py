@@ -3,12 +3,11 @@ from __future__ import annotations
 from logging import getLogger
 from typing import TYPE_CHECKING
 
-from nextcord import Embed, Guild, Object, slash_command
+from nextcord import Embed, Guild, slash_command
 from nextcord.ext.application_checks import is_owner
-from ormar import BigInteger, Model, String
 
 from ..botbase import BotBase
-from ..db import BaseMeta
+from ..db import BlacklistGuild, BlacklistUser
 from ..models import CogBase
 from ..wraps import MyInter
 
@@ -17,27 +16,6 @@ if TYPE_CHECKING:
 
 
 _log = getLogger(__name__)
-__all__ = ("BlacklistGuild", "BlacklistUser")
-
-
-class BlacklistGuild(Model):
-    class Meta(BaseMeta):
-        tablename = "blacklist_guilds"
-
-    # pyright: reportGeneralTypeIssues=false
-    id: int = BigInteger(primary_key=True, autoincrement=False)
-    reason: str = String(max_length=255, default="Unknown reason.")
-
-
-class BlacklistUser(Model):
-    class Meta(BaseMeta):
-        tablename = "blacklist_users"
-
-    id: int = BigInteger(primary_key=True, autoincrement=False)
-    reason: str = String(max_length=255, default="Unknown reason.")
-
-
-str = int
 
 
 class Blacklist:
@@ -127,8 +105,8 @@ class BlacklistCog(CogBase[BotBase]):
         await self.blacklist.add(int(user), guild=False)
         await inter.response.send_message(
             embed=Embed(
-                description=f"I have added <@{user.id}> to the blacklist.",
-                color=self.bot.color,
+                description=f"I have added <@{user}> to the blacklist.",
+                color=self.bot.colour,
             ),
             ephemeral=True,
         )
@@ -138,8 +116,8 @@ class BlacklistCog(CogBase[BotBase]):
         await self.blacklist.add(int(guild), guild=True)
         await inter.response.send_message(
             embed=Embed(
-                description=f"I have added `{guild.id}` to the blacklist.",
-                color=self.bot.color,
+                description=f"I have added `{guild}` to the blacklist.",
+                color=self.bot.colour,
             ),
             ephemeral=True,
         )
@@ -155,8 +133,8 @@ class BlacklistCog(CogBase[BotBase]):
         await self.blacklist.remove(int(user), guild=False)
         await inter.response.send_message(
             embed=Embed(
-                description=f"I have removed <@{user.id}> from the blacklist.",
-                color=self.bot.color,
+                description=f"I have removed <@{user}> from the blacklist.",
+                color=self.bot.colour,
             ),
             ephemeral=True,
         )
@@ -168,8 +146,8 @@ class BlacklistCog(CogBase[BotBase]):
         await self.blacklist.remove(int(guild), guild=True)
         await inter.response.send_message(
             embed=Embed(
-                description=f"I have removed `{guild.id}` from the blacklist.",
-                color=self.bot.color,
+                description=f"I have removed `{guild}` from the blacklist.",
+                color=self.bot.colour,
             ),
             ephemeral=True,
         )
