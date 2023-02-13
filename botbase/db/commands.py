@@ -12,7 +12,7 @@ class CommandLog(Model):
         constraints = [UniqueConstraint("command", "guild", "channel", "member")]
 
     # pyright: reportGeneralTypeIssues=false
-    id: int = String(primary_key=True, autoincrement=True)
+    id: int = Integer(primary_key=True, autoincrement=True)
     command: str = String(max_length=255)
     guild: int = BigInteger()
     channel: int = BigInteger()
