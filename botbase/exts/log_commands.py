@@ -2,11 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ormar import BigInteger, Integer, Model, String
-from sqlalchemy import UniqueConstraint
-
 from ..botbase import BotBase
-from ..db import BaseMeta, CommandLog
+from ..db import CommandLog
 from ..models import CogBase
 from ..wraps import MyInter
 
@@ -25,10 +22,8 @@ class CommandLogging(CogBase[BotBase]):
         guild = inter.guild.id if inter.guild is not None else None
         channel = inter.channel.id if inter.guild is not None else None
         member = inter.user.id
-        command_id = f"{cmd}:{guild}:{channel}:{member}"
 
         entry, created = await CommandLog.objects.get_or_create(
-            id=command_id,
             command=cmd,
             guild=guild,
             channel=channel,
