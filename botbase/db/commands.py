@@ -1,5 +1,5 @@
 from ormar import BigInteger, Integer, Model, String
-from sqlalchemy import UniqueConstraint
+from sqlalchemy import PrimaryKeyConstraint
 
 from .metadata import BaseMeta
 
@@ -9,7 +9,7 @@ __all__ = ("CommandLog",)
 class CommandLog(Model):
     class Meta(BaseMeta):
         tablename = "commands"
-        constraints = [UniqueConstraint("command", "guild", "channel", "member")]
+        constraints = [PrimaryKeyConstraint("command", "guild", "channel", "member")]
 
     # pyright: reportGeneralTypeIssues=false
     command: str = String(max_length=255, primary_key=True)
