@@ -74,7 +74,7 @@ class BotBase(AutoShardedBot):
         path = Path(file)
 
         if path.parts[-1] == "__main__.py":
-            return "/".join(path.parts[:-1])
+            return path.parts[-2]
 
         return "."
 
