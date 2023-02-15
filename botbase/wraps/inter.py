@@ -1,20 +1,21 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Generic
 
 from nextcord import Interaction, InteractionResponse
+from nextcord.interactions import ClientT
 
 from . import wrap
 
 if TYPE_CHECKING:
-    from nextcord import VoiceProtocol, ClientUser, Member
+    from nextcord import ClientUser, Member, VoiceProtocol
 
     from ..botbase import BotBase
-    from .user import WrappedUser
     from .member import WrappedMember
+    from .user import WrappedUser
 
 
-class MyInter(wrap.Wrap, Interaction):
+class MyInter(wrap.Wrap, Interaction[ClientT], Generic[ClientT]):
     user: WrappedUser | WrappedMember
     author: WrappedUser | WrappedMember
     prefix = "/"
