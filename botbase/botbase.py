@@ -12,7 +12,7 @@ from types import ModuleType
 from typing import TYPE_CHECKING
 
 from aiohttp import BaseConnector, BasicAuth, ClientSession
-from nextcord import Embed, Intents, Interaction, Member, Thread, User, abc
+from nextcord import Intents, Interaction, Member, Thread, User, abc
 from nextcord.ext.commands import AutoShardedBot, ExtensionNotFound
 from nextcord.utils import MISSING
 
@@ -23,7 +23,6 @@ if TYPE_CHECKING:
     from asyncio import AbstractEventLoop
     from typing import Any, Awaitable, Callable, Iterable, Mapping, Sequence, Union
 
-    from asyncpg import Pool
     from nextcord import (
         AllowedMentions,
         BaseActivity,
@@ -61,7 +60,6 @@ def get_handlers():
 
 
 class BotBase(AutoShardedBot):
-    db: Pool
     session: ClientSession
 
     @staticmethod
