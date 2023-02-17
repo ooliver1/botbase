@@ -203,10 +203,10 @@ class BotBase(AutoShardedBot):
 
         self.load_extension("delarva", extras={"guild_ids": guild_ids})
 
-        if blacklist_enabled:
+        if blacklist_enabled and db_enabled:
             self.load_extension("botbase.exts.blacklist")
 
-        if log_commands:
+        if log_commands and db_enabled:
             self.load_extension("botbase.exts.log_commands")
 
         if log_guilds:
