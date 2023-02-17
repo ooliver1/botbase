@@ -5,7 +5,6 @@ if getenv("DB_URI"):
     from .db import *
 
 from .botbase import *
-from .exts import *
 from .models import *
 from .wraps import *
 
