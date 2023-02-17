@@ -16,8 +16,6 @@ class GuildLogging(CogBase[BotBase]):
     async def on_guild_join(self, guild: Guild):
         if not self.bot.log_channel:
             return
-        elif not self.bot.db_enabled:
-            return
 
         assert guild.owner_id is not None
 
@@ -42,8 +40,6 @@ class GuildLogging(CogBase[BotBase]):
             return
 
         if not self.bot.log_channel:
-            return
-        elif not self.bot.db_enabled:
             return
 
         assert guild.owner_id is not None
