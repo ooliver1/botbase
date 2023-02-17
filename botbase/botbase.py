@@ -16,7 +16,6 @@ from nextcord import Intents, Interaction, Member, Thread, User, abc
 from nextcord.ext.commands import AutoShardedBot, ExtensionNotFound
 from nextcord.utils import MISSING
 
-from .db import database
 from .wraps import MyInter, WrappedChannel, WrappedMember, WrappedThread, WrappedUser
 
 if TYPE_CHECKING:
@@ -233,6 +232,8 @@ class BotBase(AutoShardedBot):
 
     async def start(self, token: str, *, reconnect: bool = True) -> None:
         if self.db_enabled:
+            from .db import database
+
             await database.connect()
 
         if self.aiohttp_enabled:
@@ -260,9 +261,11 @@ class BotBase(AutoShardedBot):
         if self.aiohttp_enabled and hasattr(self, "session"):
             await self.session.close()
 
-        if self.db_enabled and hasattr(self, "db"):
+        if self.db_enabled:
             with suppress(AsyncTimeoutError):
-                await wait_for(self.db.close(), timeout=5)
+                from .db import database
+
+                await wait_for(database.disconnect(), timeout=5)
 
         await super().close(*args, **kwargs)
 
