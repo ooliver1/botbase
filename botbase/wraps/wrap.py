@@ -3,19 +3,21 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from nextcord import (
-    Message,
+    DMChannel,
     Embed,
-    WebhookMessage,
+    Message,
+    PartialMessageable,
     TextChannel,
     Thread,
-    DMChannel,
-    PartialMessageable,
+    WebhookMessage,
 )
 from nextcord.abc import Messageable
 from nextcord.utils import utcnow
 
 if TYPE_CHECKING:
     from typing import Any
+
+    from nextcord import Colour
 
     from ..botbase import BotBase
 
@@ -66,7 +68,7 @@ class Wrap:
         author: str | None = None,
         image: str | None = None,
         thumbnail: str | None = None,
-        color=None,
+        colour: Colour | None = None,
         target=None,
         reply: bool = False,
         contain_timestamp: bool = True,
@@ -77,13 +79,13 @@ class Wrap:
     ) -> Message | WebhookMessage | None:
         from .channel import WrappedChannel
         from .inter import MyInter
-        from .thread import WrappedThread
         from .member import WrappedMember
+        from .thread import WrappedThread
         from .user import WrappedUser
 
         target = target or self
 
-        embed = Embed(title=title, description=desc, color=color or self._bot.color)
+        embed = Embed(title=title, description=desc, colour=colour or self._bot.colour)
 
         if contain_timestamp:
             embed.timestamp = utcnow()
