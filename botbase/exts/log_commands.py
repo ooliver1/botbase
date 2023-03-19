@@ -41,7 +41,7 @@ class CommandLogging(CogBase[BotBase]):
             )
         else:
             entry.amount += 1
-            await entry.save()
+            await entry.update()
 
 
 def setup(bot: BotBase):
