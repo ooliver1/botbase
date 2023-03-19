@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from ormar import NoMatch
+
 from ..botbase import BotBase
 from ..db import CommandLog
 from ..models import CogBase
@@ -23,15 +25,23 @@ class CommandLogging(CogBase[BotBase]):
         channel = inter.channel.id if inter.guild is not None else None
         member = inter.user.id
 
-        entry, created = await CommandLog.objects.get_or_create(
-            command=cmd,
-            guild=guild,
-            channel=channel,
-            member=member,
-        )
-        if not created:
+        try:
+            entry = await CommandLog.objects.get(
+                command=cmd,
+                guild=guild,
+                channel=channel,
+                member=member,
+            )
+        except NoMatch:
+            await CommandLog.objects.create(
+                command=cmd,
+                guild=guild,
+                channel=channel,
+                member=member,
+            )
+        else:
             entry.amount += 1
-            await entry.update()
+            await entry.save()
 
 
 def setup(bot: BotBase):
