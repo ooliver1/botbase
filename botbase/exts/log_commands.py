@@ -5,9 +5,10 @@ from typing import TYPE_CHECKING
 from ormar import NoMatch
 
 from ..botbase import BotBase
-from ..db import CommandLog
+from ..db import CommandLog, database
 from ..models import CogBase
 from ..wraps import MyInter
+
 
 if TYPE_CHECKING:
     from ..botbase import BotBase
@@ -25,23 +26,21 @@ class CommandLogging(CogBase[BotBase]):
         channel = inter.channel.id if inter.guild is not None else None
         member = inter.user.id
 
-        try:
-            entry = await CommandLog.objects.get(
-                command=cmd,
-                guild=guild,
-                channel=channel,
-                member=member,
-            )
-        except NoMatch:
-            await CommandLog.objects.create(
-                command=cmd,
-                guild=guild,
-                channel=channel,
-                member=member,
-            )
-        else:
-            entry.amount += 1
-            await entry.update()
+        # Composite PK not in ormar ruins the whole SQL statement.
+        await database.execute(
+            """
+            INSERT INTO commands (command, guild, channel, member, amount)
+            VALUES (:command, :guild, :channel, :member, 1)
+            ON CONFLICT (command, guild, channel, member)
+            DO UPDATE SET amount = commands.amount + 1
+            """,
+            {
+                "command": cmd,
+                "guild": guild,
+                "channel": channel,
+                "member": member,
+            },
+        )
 
 
 def setup(bot: BotBase):
