@@ -22,7 +22,7 @@ delarva = { git = "https://github.com/ooliver1/delarva" }
 db = ["asyncpg", "ormar"]
 
 [tool.poetry.group.dev.dependencies]
-black = "^22.3.0"
+black = ">=22.3,<24.0"
 isort = "^5.10.1"
 
 [build-system]
