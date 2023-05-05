@@ -5,22 +5,23 @@ description = "A personal nextcord bot base package for bots."
 authors = ["ooliver1 <oliverwilkes2006@icloud.com>"]
 license = "MIT"
 repository = "https://github.com/ooliver1/botbase"
-packages = [
-    {include = "botbase" },
-]
+packages = [{ include = "botbase" }]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-asyncpg = ">=0.25,<0.28"
+asyncpg = { version = ">=0.25,<0.28", optional = true }
 nextcord = "^2.0.0"
 nextcord-ext-menus = "^1.5.2"
 psutil = "^5.9.0"
-ormar = ">=0.11.0,<0.13.0"
+ormar = { version = ">=0.11.0,<0.13.0", optional = true, extras = ["postgres"] }
 python-dotenv = ">=0.16.0,<0.22.0"
-delarva = {git = "https://github.com/ooliver1/delarva"}
+delarva = { git = "https://github.com/ooliver1/delarva" }
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.extras]
+db = ["asyncpg", "ormar"]
+
+[tool.poetry.group.dev.dependencies]
 black = "^22.3.0"
 isort = "^5.10.1"
 
