@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/ooliver1/botbase/compare/v2.0.0...v2.0.1) (2023-05-05)
+
+
+### Bug Fixes
+
+* dont depend on delarva for now ([e3d2a76](https://github.com/ooliver1/botbase/commit/e3d2a769a4214eedf4ceb63cb36d347fb00913ad))
+
 ## [2.0.0](https://github.com/ooliver1/botbase/compare/v1.22.3...v2.0.0) (2023-05-05)
 
 
