@@ -1,5 +1,61 @@
 # Changelog
 
+## [2.0.0](https://github.com/ooliver1/botbase/compare/v1.22.3...v2.0.0) (2023-05-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* [db] is now required as an extra to use database dependencies
+* remove unused exceptions mod
+* remove guild logging to a cog
+* move command logs to a cog
+* remove config to kwarg options
+* remove emojis dict shim
+* remove cli
+* use exts/**/*.py for extensions
+* remove help config
+* **wraps:** remove ctx convert methods
+* remove old blacklist
+* remove help cog
+
+### Bug Fixes
+
+* add guild ids to delarva ([8acca62](https://github.com/ooliver1/botbase/commit/8acca626e2acbc4e3d0106f3c190c371d355fbf3))
+* attempt commandlog composte patch ([1abb10e](https://github.com/ooliver1/botbase/commit/1abb10ef584c59a162a7103638ccc028f4fc049e))
+* **blacklist:** i am so good ([622f5e3](https://github.com/ooliver1/botbase/commit/622f5e30c7540b9e6c99f394f8caca4c6cfcdc98))
+* **blacklist:** thanks copilot ([13c0933](https://github.com/ooliver1/botbase/commit/13c09332b7db4f2ddd7c2ece12cc450e1e979f97))
+* **blacklist:** wait for ready before loading ([f89ddd6](https://github.com/ooliver1/botbase/commit/f89ddd68919c41a83e4d54ea182451ce86383450))
+* composite pk? ([7cc0a09](https://github.com/ooliver1/botbase/commit/7cc0a094e82cb9c05e812fde1feda094a9674883))
+* import db metadata ([17d263e](https://github.com/ooliver1/botbase/commit/17d263ea4e87e972c390678fd3e827f8298f5b81))
+* **log-commands:** i hope ([8a2613a](https://github.com/ooliver1/botbase/commit/8a2613a53732d7eba711011f585bc3bb592f9a2d))
+* move db models elsewhere to be cached ([addaf31](https://github.com/ooliver1/botbase/commit/addaf317b27a4633b4e551d25174b58e58a9abc5))
+* oh :skull: ([b06e7a5](https://github.com/ooliver1/botbase/commit/b06e7a507711dbf6d4db91961558aa17bb9bb998))
+* properly close db ([93a9579](https://github.com/ooliver1/botbase/commit/93a9579d3836b98d97baad0b21e3b505ef2efc46))
+* remove import to cogs ([267cbd9](https://github.com/ooliver1/botbase/commit/267cbd9ff42540a719edbbdc1f5efe4102462d21))
+* remove unused and outdated checks ([5247d29](https://github.com/ooliver1/botbase/commit/5247d297e742df4c2668834bcfeb1323b692aef2))
+* **wraps:** use proper attr for colour from bot ([13b1cfd](https://github.com/ooliver1/botbase/commit/13b1cfd9896021faf7aee1fe4fa3f42476ec3e6a))
+* yet again thanks ormar &lt;3 ([2c6f4b4](https://github.com/ooliver1/botbase/commit/2c6f4b4df31c5b9ea8354a2ad9367f110ce7baf1))
+
+
+### Code Refactoring
+
+* move command logs to a cog ([152c022](https://github.com/ooliver1/botbase/commit/152c0225909c50d5792548d5ae0b883c623697aa))
+* remove cli ([f2741d7](https://github.com/ooliver1/botbase/commit/f2741d79b59dceb406057023256948b851da6308))
+* remove config to kwarg options ([585377e](https://github.com/ooliver1/botbase/commit/585377e4766996d0a390c5a28b1537fa1635123d))
+* remove emojis dict shim ([c07ff54](https://github.com/ooliver1/botbase/commit/c07ff545458ea76e0f2c928dab421f778f8ccbf0))
+* remove guild logging to a cog ([c04162d](https://github.com/ooliver1/botbase/commit/c04162dc736a834c140965d8b22968b1d2a851b6))
+* remove help cog ([c7a2023](https://github.com/ooliver1/botbase/commit/c7a2023059ccaa8d753df5b2dde3ffcb4779d875))
+* remove help config ([79e5469](https://github.com/ooliver1/botbase/commit/79e5469dc2f07a62a407650624073dc16c80b36a))
+* remove old blacklist ([dee1ed2](https://github.com/ooliver1/botbase/commit/dee1ed2603ee2bc0626027394defd87063644a26))
+* remove unused exceptions mod ([426359d](https://github.com/ooliver1/botbase/commit/426359d2642b54240ae5753f287adb1edb918430))
+* use exts/**/*.py for extensions ([14f4dd2](https://github.com/ooliver1/botbase/commit/14f4dd2309794566b19ef6057ae8caf78385cad3))
+* **wraps:** remove ctx convert methods ([27f31f0](https://github.com/ooliver1/botbase/commit/27f31f0779c9426f1f967012eb49316944ee477f))
+
+
+### Miscellaneous Chores
+
+* move db deps to optional extra ([1f97e5b](https://github.com/ooliver1/botbase/commit/1f97e5bacda1ecee3efc3ce5b91c7c8a874c0abf))
+
 ## [1.22.3](https://github.com/ooliver1/botbase/compare/v1.22.2...v1.22.3) (2022-10-25)
 
 
