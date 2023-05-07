@@ -33,7 +33,10 @@ class GuildLogging(CogBase[BotBase]):
             ),
             color=self.bot.colour,
         )
-        await self.get_channel(self.log_channel).send(embed=embed)  # type: ignore
+        try:
+            await self.bot.get_channel(self.bot.log_channel).send(embed=embed)  # type: ignore
+        except AttributeError:
+            pass
 
     async def on_guild_remove(self, guild: Guild):
         if guild.unavailable:
