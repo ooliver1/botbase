@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 
 
 class GuildLogging(CogBase[BotBase]):
+    @CogBase.listener()
     async def on_guild_join(self, guild: Guild):
         if not self.bot.log_channel:
             return
@@ -38,6 +39,7 @@ class GuildLogging(CogBase[BotBase]):
         except AttributeError:
             pass
 
+    @CogBase.listener()
     async def on_guild_remove(self, guild: Guild):
         if guild.unavailable:
             return
