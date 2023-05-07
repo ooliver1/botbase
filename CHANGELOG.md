@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/ooliver1/botbase/compare/v2.0.1...v2.0.2) (2023-05-07)
+
+
+### Bug Fixes
+
+* **log-guilds:** resolve guild join handler ([a1c0663](https://github.com/ooliver1/botbase/commit/a1c0663efe0639e0f37eb663c50049151a729009))
+
 ## [2.0.1](https://github.com/ooliver1/botbase/compare/v2.0.0...v2.0.1) (2023-05-05)
 
 
