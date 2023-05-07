@@ -5,6 +5,7 @@
 
 ### Bug Fixes
 
+* **log-guilds:** actually make them listeners ([7b2ba3a](https://github.com/ooliver1/botbase/commit/7b2ba3a8620675c37ab5ca61697fb819f71898e4))
 * **log-guilds:** resolve guild join handler ([a1c0663](https://github.com/ooliver1/botbase/commit/a1c0663efe0639e0f37eb663c50049151a729009))
 
 ## [2.0.1](https://github.com/ooliver1/botbase/compare/v2.0.0...v2.0.1) (2023-05-05)
