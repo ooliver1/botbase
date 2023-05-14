@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import traceback
 from asyncio import TimeoutError as AsyncTimeoutError
 from asyncio import wait_for
 from contextlib import suppress
@@ -220,15 +221,43 @@ class BotBase(AutoShardedBot):
         if context["message"] == "Unclosed client session":
             return
 
-        log.error(
-            context["message"]
-            + "\n"
-            + "\n".join(
-                f"{k}: {v}"
-                for k, v in context.items()
-                if k != "message" and k is not None and v is not None and k != "None"
-            )
-        )
+        message = context.get("message")
+        if not message:
+            message = "Unhandled exception in event loop"
+
+        exception = context.get("exception")
+        if exception is not None:
+            exc_info = (type(exception), exception, exception.__traceback__)
+        else:
+            exc_info = False
+
+        if (
+            "source_traceback" not in context
+            and self.loop._current_handle is not None  # pyright: ignore
+            and self.loop._current_handle._source_traceback  # pyright: ignore
+        ):
+            context[
+                "handle_traceback"
+            ] = self.loop._current_handle._source_traceback  # pyright: ignore
+
+        log_lines = [message]
+        for key in sorted(context):
+            if key in {"message", "exception"}:
+                continue
+            value = context[key]
+            if key == "source_traceback":
+                tb = "".join(traceback.format_list(value))
+                value = "Object created at (most recent call last):\n"
+                value += tb.rstrip()
+            elif key == "handle_traceback":
+                tb = "".join(traceback.format_list(value))
+                value = "Handle created at (most recent call last):\n"
+                value += tb.rstrip()
+            else:
+                value = repr(value)
+            log_lines.append(f"{key}: {value}")
+
+        log.error("\n".join(log_lines), exc_info=exc_info)
 
     async def start(self, token: str, *, reconnect: bool = True) -> None:
         if self.db_enabled:
