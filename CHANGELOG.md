@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.3](https://github.com/ooliver1/botbase/compare/v2.0.2...v2.0.3) (2023-05-14)
+
+
+### Bug Fixes
+
+* use a decent asyncio handler ([40bbfec](https://github.com/ooliver1/botbase/commit/40bbfec2f34215c7a6d542693a224552d4acaf66))
+
 ## [2.0.2](https://github.com/ooliver1/botbase/compare/v2.0.1...v2.0.2) (2023-05-07)
 
 
