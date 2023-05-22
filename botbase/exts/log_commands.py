@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from piccolo.querystring import Unquoted
+
 from ..botbase import BotBase
 from ..db import CommandLog
 from ..models import CogBase
@@ -18,18 +20,24 @@ class CommandLogging(CogBase[BotBase]):
         channel = inter.channel.id if inter.guild is not None else None
         member = inter.user.id
 
-        # Incrementing amount without funky sub queries is not possible.
-        await CommandLog.raw(
-            """
-            INSERT INTO command_log (command, guild, channel, member, amount)
-            VALUES ({}, {}, {}, {}, 1)
-            ON CONFLICT (command, guild, channel, member)
-            DO UPDATE SET amount = command_log.amount + 1;
-            """,
-            cmd,
-            guild,
-            channel,
-            member,
+        await CommandLog.insert(
+            CommandLog(
+                {
+                    CommandLog.command: cmd,
+                    CommandLog.guild: guild,
+                    CommandLog.channel: channel,
+                    CommandLog.member: member,
+                }
+            )
+        ).on_conflict(
+            (
+                CommandLog.command,
+                CommandLog.guild,
+                CommandLog.channel,
+                CommandLog.member,
+            ),
+            "DO UPDATE",
+            ((CommandLog.amount, Unquoted("command_log.amount + 1")),),
         )
 
 
