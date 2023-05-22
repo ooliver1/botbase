@@ -1,3 +1,6 @@
+import asyncio
+from functools import partial
+
 from piccolo.apps.migrations.auto.migration_manager import MigrationManager
 from piccolo.columns.column_types import BigInt, Integer, Text
 from piccolo.columns.indexes import IndexMethod
@@ -203,10 +206,15 @@ async def forwards():
         class RawTable(Table):
             ...
 
-        await RawTable.raw(
-            "ALTER TABLE command_log ADD UNIQUE (command, guild, channel, member);"
-        )
+        for _ in range(100):
+            try:
+                await RawTable.raw(
+                    "ALTER TABLE command_log "
+                    "ADD UNIQUE (command, guild, channel, member);"
+                )
+            except Exception:
+                await asyncio.sleep(0.1)
 
-    manager.add_raw(composite_unique)
+    manager.add_raw(partial(asyncio.create_task, composite_unique()))
 
     return manager
