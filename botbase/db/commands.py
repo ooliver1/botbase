@@ -1,26 +1,18 @@
-from ormar import BigInteger, Integer, Model, String
-from sqlalchemy import PrimaryKeyConstraint
+from logging import getLogger
 
-from .metadata import BaseMeta
+from piccolo.table import Table
+from piccolo.columns import BigInt, Text, Integer
 
+log = getLogger(__name__)
 __all__ = ("CommandLog",)
 
 
-class CommandLog(Model):
-    class Meta(BaseMeta):
-        tablename = "commands"
-        constraints = [PrimaryKeyConstraint("command", "guild", "channel", "member")]
-
-    # pyright: reportGeneralTypeIssues=false
-    command: str = String(max_length=255, primary_key=True)
-    guild: int = BigInteger()
-    channel: int = BigInteger()
-    member: int = BigInteger()
-    amount: int = BigInteger(default=1)
+class CommandLog(Table):
+    command = Text(primary_key=True)
+    guild = BigInt()
+    channel = BigInt()
+    member = BigInt()
+    amount = Integer(default=1)
 
 
-# ormar :(
-CommandLog.command.primary_key = True
-CommandLog.guild.primary_key = True
-CommandLog.channel.primary_key = True
-CommandLog.member.primary_key = True
+log.critical("Make sure to set command, guild, channel, member UNIQUE.")

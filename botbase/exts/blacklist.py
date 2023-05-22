@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from logging import getLogger
-from typing import TYPE_CHECKING
 
 from nextcord import Embed, Guild, slash_command
 from nextcord.ext.application_checks import is_owner
@@ -10,10 +9,6 @@ from ..botbase import BotBase
 from ..db import BlacklistGuild, BlacklistUser
 from ..models import CogBase
 from ..wraps import MyInter
-
-if TYPE_CHECKING:
-    from ..botbase import BotBase
-
 
 _log = getLogger(__name__)
 
@@ -35,24 +30,32 @@ class Blacklist:
 
         if guild:
             self.guilds.add(obj)
-            await BlacklistGuild.objects.create(id=obj, reason=reason)
+            await BlacklistGuild(
+                {BlacklistGuild.id: obj, BlacklistGuild.reason: reason}
+            ).save()
         else:
             self.users.add(obj)
-            await BlacklistUser.objects.create(id=obj, reason=reason)
+            await BlacklistUser(
+                {BlacklistUser.id: obj, BlacklistUser.reason: reason}
+            ).save()
 
     async def remove(self, obj: int, guild: bool = False) -> None:
         assert isinstance(obj, int)
 
         if guild:
             self.guilds.discard(obj)
-            await BlacklistGuild.objects.delete(id=obj)
+            await BlacklistGuild.delete().where(BlacklistGuild.id == obj)
         else:
             self.users.discard(obj)
-            await BlacklistUser.objects.delete(id=obj)
+            await BlacklistUser.delete().where(BlacklistGuild.id == obj)
 
     async def load(self) -> None:
-        self.guilds = set(await BlacklistGuild.objects.values_list("id", flatten=True))
-        self.users = set(await BlacklistUser.objects.values_list("id", flatten=True))
+        self.guilds = set(
+            item["id"] for item in await BlacklistGuild.select(BlacklistGuild.id)
+        )
+        self.users = set(
+            item["id"] for item in await BlacklistUser.select(BlacklistUser.id)
+        )
 
 
 class BlacklistCog(CogBase[BotBase]):
@@ -62,7 +65,8 @@ class BlacklistCog(CogBase[BotBase]):
         self.blacklist = Blacklist()
         bot.loop.create_task(self.load_blacklist())
         self.old_process_application_commands = bot.process_application_commands
-        bot.process_application_commands = self.check  # type: ignore  # MyInter + Interaction
+        # MyInter + Interaction
+        bot.process_application_commands = self.check  # type: ignore
 
         if bot.guild_ids:
             self.blacklist_.guild_ids_to_rollout.update(bot.guild_ids)

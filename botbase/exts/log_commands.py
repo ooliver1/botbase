@@ -1,17 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
-from ormar import NoMatch
-
 from ..botbase import BotBase
-from ..db import CommandLog, database
+from ..db import CommandLog
 from ..models import CogBase
 from ..wraps import MyInter
-
-
-if TYPE_CHECKING:
-    from ..botbase import BotBase
 
 
 class CommandLogging(CogBase[BotBase]):
@@ -26,20 +18,18 @@ class CommandLogging(CogBase[BotBase]):
         channel = inter.channel.id if inter.guild is not None else None
         member = inter.user.id
 
-        # Composite PK not in ormar ruins the whole SQL statement.
-        await database.execute(
+        # Incrementing amount without funky sub queries is not possible.
+        await CommandLog.raw(
             """
-            INSERT INTO commands (command, guild, channel, member, amount)
-            VALUES (:command, :guild, :channel, :member, 1)
+            INSERT INTO command_log (command, guild, channel, member, amount)
+            VALUES ({}, {}, {}, {}, 1)
             ON CONFLICT (command, guild, channel, member)
-            DO UPDATE SET amount = commands.amount + 1
+            DO UPDATE SET amount = command_log.amount + 1;
             """,
-            {
-                "command": cmd,
-                "guild": guild,
-                "channel": channel,
-                "member": member,
-            },
+            cmd,
+            guild,
+            channel,
+            member,
         )
 
 
