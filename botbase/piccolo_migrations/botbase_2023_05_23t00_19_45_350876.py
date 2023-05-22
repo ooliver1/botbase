@@ -1,9 +1,7 @@
 from piccolo.apps.migrations.auto.migration_manager import MigrationManager
-from piccolo.columns.column_types import BigInt
-from piccolo.columns.column_types import Integer
-from piccolo.columns.column_types import Text
+from piccolo.columns.column_types import BigInt, Integer, Text
 from piccolo.columns.indexes import IndexMethod
-
+from piccolo.table import Table
 
 ID = "2023-05-23T00:19:45:350876"
 VERSION = "0.111.1"
@@ -111,7 +109,7 @@ async def forwards():
         params={
             "default": "",
             "null": False,
-            "primary_key": True,
+            "primary_key": False,
             "unique": False,
             "index": False,
             "index_method": IndexMethod.btree,
@@ -200,5 +198,15 @@ async def forwards():
             "secret": False,
         },
     )
+
+    async def composite_unique() -> None:
+        class RawTable(Table):
+            ...
+
+        await RawTable.raw(
+            "ALTER TABLE command_log ADD UNIQUE (command, guild, channel, member);"
+        )
+
+    manager.add_raw(composite_unique)
 
     return manager

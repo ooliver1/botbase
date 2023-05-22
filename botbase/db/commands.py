@@ -13,6 +13,3 @@ class CommandLog(Table):
     channel = BigInt()
     member = BigInt()
     amount = Integer(default=1)
-
-
-log.critical("Make sure to set command, guild, channel, member UNIQUE.")
