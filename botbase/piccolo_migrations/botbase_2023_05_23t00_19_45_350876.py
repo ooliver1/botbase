@@ -202,19 +202,4 @@ async def forwards():
         },
     )
 
-    async def composite_unique() -> None:
-        class RawTable(Table):
-            ...
-
-        for _ in range(100):
-            try:
-                await RawTable.raw(
-                    "ALTER TABLE command_log "
-                    "ADD UNIQUE (command, guild, channel, member);"
-                )
-            except Exception:
-                await asyncio.sleep(0.1)
-
-    manager.add_raw(partial(asyncio.create_task, composite_unique()))
-
     return manager
