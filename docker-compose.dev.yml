@@ -1,0 +1,16 @@
+version: "3"
+
+# export DB_URI=postgresql://postgres:postgres@localhost:5432/bot
+# docker-compose -f docker-compose.dev.yml up -d
+# docker-compose -f docker-compose.dev.yml down *should* remove data
+services:
+  postgres:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: bot
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432
