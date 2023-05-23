@@ -38,7 +38,7 @@ class CommandLogging(CogBase[BotBase]):
         #     ((CommandLog.amount, Unquoted("command_log.amount + 1")),),
         # )
         await CommandLog.raw(
-            """INSERT INTO command_log
+            """INSERT INTO command_log (command, guild, channel, member, amount)
             VALUES ({}, {}, {}, {}, 1)
             ON CONFLICT (command, guild, channel, member)
             DO UPDATE
