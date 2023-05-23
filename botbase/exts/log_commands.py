@@ -13,6 +13,11 @@ class CommandLogging(CogBase[BotBase]):
 
         assert inter.channel is not None
 
+        cmd = inter.application_command.name
+        guild = inter.guild.id if inter.guild is not None else None
+        channel = inter.channel.id if inter.guild is not None else None
+        member = inter.user.id
+
         # await CommandLog.insert(
         #     CommandLog(
         #         {
@@ -38,7 +43,11 @@ class CommandLogging(CogBase[BotBase]):
             ON CONFLICT (command, guild, channel, member)
             DO UPDATE
             SET amount = command_log.amount + 1
-        """
+            """,
+            cmd,
+            guild,
+            channel,
+            member,
         )
 
 
