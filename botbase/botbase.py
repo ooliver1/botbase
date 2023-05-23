@@ -260,11 +260,6 @@ class BotBase(AutoShardedBot):
         log.error("\n".join(log_lines), exc_info=exc_info)
 
     async def start(self, token: str, *, reconnect: bool = True) -> None:
-        if self.db_enabled:
-            from .db import database
-
-            await database.connect()
-
         if self.aiohttp_enabled:
             self.session = ClientSession()
 
@@ -289,12 +284,6 @@ class BotBase(AutoShardedBot):
     async def close(self, *args, **kwargs) -> None:
         if self.aiohttp_enabled and hasattr(self, "session"):
             await self.session.close()
-
-        if self.db_enabled:
-            with suppress(AsyncTimeoutError):
-                from .db import database
-
-                await wait_for(database.disconnect(), timeout=5)
 
         await super().close(*args, **kwargs)
 
