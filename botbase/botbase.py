@@ -1,11 +1,7 @@
 from __future__ import annotations
 
 import traceback
-from asyncio import TimeoutError as AsyncTimeoutError
-from asyncio import wait_for
-from contextlib import suppress
 from logging import CRITICAL, INFO, Formatter, StreamHandler, getLogger
-from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from random import choice
 from sys import modules
@@ -40,17 +36,15 @@ if TYPE_CHECKING:
 log = getLogger(__name__)
 
 
-def get_handlers():
+def get_handler():
     formatter = Formatter(
         "%(levelname)-7s %(asctime)s %(filename)12s:%(funcName)-28s: %(message)s",
         datefmt="%H:%M:%S %d/%m/%Y",
     )
-    i = StreamHandler()
 
-    i.setFormatter(formatter)
-    h.setFormatter(formatter)
-    h.namer = lambda name: name.replace(".log", "") + ".log"
-    return h, i
+    handler = StreamHandler()
+    handler.setFormatter(formatter)
+    return handler
 
 
 class BotBase(AutoShardedBot):
@@ -168,10 +162,8 @@ class BotBase(AutoShardedBot):
         log = getLogger()
         log.handlers = []
         log.setLevel(INFO)
-        h, i = get_handlers()
-
-        log.addHandler(h)
-        log.addHandler(i)
+        handler = get_handler()
+        log.addHandler(handler)
         getLogger("asyncio").setLevel(CRITICAL)
 
         self.loop.set_exception_handler(self.asyncio_handler)
