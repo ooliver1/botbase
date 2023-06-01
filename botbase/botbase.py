@@ -45,12 +45,6 @@ def get_handlers():
         "%(levelname)-7s %(asctime)s %(filename)12s:%(funcName)-28s: %(message)s",
         datefmt="%H:%M:%S %d/%m/%Y",
     )
-    h = RotatingFileHandler(
-        "./logs/bot/io.log",
-        maxBytes=1000000,
-        backupCount=5,
-        encoding="utf-8",
-    )
     i = StreamHandler()
 
     i.setFormatter(formatter)
