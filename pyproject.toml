@@ -14,7 +14,7 @@ nextcord = "^2.0.0"
 nextcord-ext-menus = "^1.5.2"
 psutil = "^5.9.0"
 python-dotenv = ">=0.16.0,<1.1.0"
-piccolo = { version = "^0.111.1", optional = true, extras = [
+piccolo = { version = ">=0.111.1,<0.117.0", optional = true, extras = [
     "orjson",
     "uvloop",
     "postgres",
