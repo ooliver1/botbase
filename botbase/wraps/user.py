@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from nextcord import User
-from nextcord.ext.commands import UserConverter
 
 from . import wrap
 
