@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.0.0](https://github.com/ooliver1/botbase/compare/v2.0.3...v3.0.0) (2023-08-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* piccolo
+
+### Features
+
+* migrations ([01c6e63](https://github.com/ooliver1/botbase/commit/01c6e63855fa6a642e39b7211ecdfcccaa3048e9))
+* piccolo ([1764aaf](https://github.com/ooliver1/botbase/commit/1764aafa6022dba1eeceb87d738b55e1afff9810))
+
+
+### Bug Fixes
+
+* actually return handler ([b72c501](https://github.com/ooliver1/botbase/commit/b72c501f647a90bbff855eec3c24da8ac50abcd9))
+* **botbase:** dont open and close db now ([079a76f](https://github.com/ooliver1/botbase/commit/079a76f73cf7eb452639e8c180aa7ecd0fc45ed6))
+* **log-commands:** add parameters ([bac1ab3](https://github.com/ooliver1/botbase/commit/bac1ab343d58898346cca2944e3687aa0d10147f))
+* psutil linux only ([b7330d7](https://github.com/ooliver1/botbase/commit/b7330d733342a1743ab1cfc54fbd5ba2c3989ef9))
+* remove file logging ([631c203](https://github.com/ooliver1/botbase/commit/631c20326335a62080b20f84825288a1d747af79))
+
 ## [2.0.3](https://github.com/ooliver1/botbase/compare/v2.0.2...v2.0.3) (2023-05-14)
 
 
