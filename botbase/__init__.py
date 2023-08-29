@@ -8,7 +8,7 @@ from .botbase import *
 from .models import *
 from .wraps import *
 
-__version__ = "2.0.3"  # x-release-please-version
+__version__ = "3.0.0"  # x-release-please-version
 
 
 getLogger(__name__).addHandler(NullHandler())
